@@ -1,0 +1,9 @@
+.DS_Store
+.idea
+.sass-cache
+*.log
+coverage
+log
+pkg
+projectFilesBackup
+tmp

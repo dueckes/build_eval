@@ -1,6 +1,6 @@
 describe BuildEval::CIServer::Decorator do
 
-  let(:decorated_server)  { double("BuildEval::CIServer::Server") }
+  let(:decorated_server) { double("BuildEval::CIServer::Server") }
 
   let(:decorator) { described_class.new(decorated_server) }
 

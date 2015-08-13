@@ -7,7 +7,7 @@ Status
 ------------
 
 [![Build Status](https://travis-ci.org/MYOB-Technology/build_eval.png)](https://travis-ci.org/MYOB-Technology/build_eval)
-[![Gem Version](https://badge.fury.io/rb/build_eval.png)](http://badge.fury.io/rb/build_eval)
+[![Gem Version](https://badge.fury.io/rb/build_eval.svg)](http://badge.fury.io/rb/build_eval)
 [![Dependency Status](https://gemnasium.com/MYOB-Technology/build_eval.png)](https://gemnasium.com/MYOB-Technology/build_eval)
 
 

@@ -20,7 +20,7 @@ module BuildEval
 
       def find(name)
         begin
-          self.const_get(name)
+          self.const_get(name.upcase)
         rescue NameError
           raise "Build status '#{name}' is invalid"
         end

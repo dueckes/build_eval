@@ -1,10 +1,12 @@
 require 'nokogiri'
 
+require_relative 'build_eval/http'
 require_relative 'build_eval/status'
 require_relative 'build_eval/build_result'
 require_relative 'build_eval/build_results'
 require_relative 'build_eval/ci_server/decorator'
 require_relative 'build_eval/ci_server/team_city'
+require_relative 'build_eval/ci_server/travis'
 require_relative 'build_eval/monitor'
 
 module BuildEval

@@ -14,6 +14,16 @@ describe BuildEval::Status do
 
     end
 
+    context "when the name matches a status constant name with different casing" do
+
+      let(:name) { "Success" }
+
+      it "returns the constant" do
+        expect(subject).to be(BuildEval::Status::SUCCESS)
+      end
+
+    end
+
     context "when the name is completely different from a status constant name" do
 
       let(:name) { "does_not_match" }

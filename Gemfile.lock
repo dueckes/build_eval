@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    build_eval (0.0.1)
+    build_eval (0.0.2)
       nokogiri (~> 1.6)
 
 GEM
@@ -169,3 +169,6 @@ DEPENDENCIES
   rspec (~> 3.3)
   simplecov (~> 0.10)
   travis-lint (~> 2.0)
+
+BUNDLED WITH
+   1.10.5

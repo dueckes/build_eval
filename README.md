@@ -10,14 +10,18 @@ Status
 [![Gem Version](https://badge.fury.io/rb/build_eval.svg)](http://badge.fury.io/rb/build_eval)
 [![Dependency Status](https://gemnasium.com/MYOB-Technology/build_eval.png)](https://gemnasium.com/MYOB-Technology/build_eval)
 
-
 Usage
 -----
 
 ```BuildEval``` determines the status of builds.
 
-It integrates with commonly used CI platforms to provide an effective status for builds of interest.
+Integrates with commonly used CI platforms to provide an effective status for builds of interest.
 
+Currently supports:
+* TeamCity via Basic Authentication
+* TravisCI for Open Source projects
+
+Example integrating with TeamCity:
 ```ruby
   require 'build_eval'
   require 'blinky'
@@ -26,7 +30,7 @@ It integrates with commonly used CI platforms to provide an effective status for
     type:     :TeamCity,
     uri:      "https://some.teamcity.server",
     username: "guest",
-    password: "guest"
+    password: "guest" # Note: uses basic authentication
   ).monitor("build_1", "build_2", "build_3")
 
   loop do
@@ -41,7 +45,17 @@ It integrates with commonly used CI platforms to provide an effective status for
 end
 ```
 
-Note that unsuccessful builds are 
+Example integrating with TravisCI:
+```ruby
+  require 'build_eval'
+
+  travis_monitor = BuildEval.server(
+    type:     :Travis,
+    username: "my_username"
+  ).monitor("build_1", "build_2", "build_3")
+
+end
+```
 
 Installation
 ------------

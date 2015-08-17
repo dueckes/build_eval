@@ -15,8 +15,8 @@ module BuildEval
 
       SUCCESS = self.new(severity: 0, symbol: :success!, description: "succeeded")
       UNKNOWN = self.new(severity: 1, symbol: :warning!, description: "unknown")
-      FAILURE = self.new(severity: 2, symbol: :failed!,  description: "failed")
-      ERROR   = self.new(severity: 3, symbol: :failed!,  description: "errored")
+      FAILURE = self.new(severity: 2, symbol: :failure!,  description: "failed")
+      ERROR   = self.new(severity: 3, symbol: :failure!,  description: "errored")
 
       class << self
 

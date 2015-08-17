@@ -7,3 +7,7 @@
 + TravisCI Open Source project support
 + Error status support
 + Composite monitors
+
+** 0.0.3 **
+
+Failure and Error status symbols mirror Blinky

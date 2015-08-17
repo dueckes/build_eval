@@ -120,7 +120,7 @@ describe BuildEval::Result::Status do
 
     subject { status.to_sym }
 
-    { SUCCESS: :success!, UNKNOWN: :warning!, FAILURE: :failed!, ERROR: :failed! }.each do |name, expected_symbol|
+    { SUCCESS: :success!, UNKNOWN: :warning!, FAILURE: :failure!, ERROR: :failure! }.each do |name, expected_symbol|
 
       context "when the status is #{name}" do
 

@@ -5,4 +5,5 @@
 ** 0.0.2 **
 
 + TravisCI Open Source project support
++ Error status support
 + Composite monitors

@@ -52,20 +52,30 @@ describe BuildEval::Result::Status do
 
     context "when the statuses are ordered in descending severity" do
 
-      let(:statuses) { [ BuildEval::Result::Status::FAILURE, BuildEval::Result::Status::UNKNOWN, BuildEval::Result::Status::SUCCESS ] }
+      let(:statuses) do
+        [ BuildEval::Result::Status::ERROR,
+          BuildEval::Result::Status::FAILURE,
+          BuildEval::Result::Status::UNKNOWN,
+          BuildEval::Result::Status::SUCCESS ]
+      end
 
       it "returns the most severe status" do
-        expect(subject).to eql(BuildEval::Result::Status::FAILURE)
+        expect(subject).to eql(BuildEval::Result::Status::ERROR)
       end
 
     end
 
     context "when the statuses are ordered in ascending severity" do
 
-      let(:statuses) { [ BuildEval::Result::Status::SUCCESS, BuildEval::Result::Status::UNKNOWN, BuildEval::Result::Status::FAILURE ] }
+      let(:statuses) do
+        [ BuildEval::Result::Status::SUCCESS,
+          BuildEval::Result::Status::UNKNOWN,
+          BuildEval::Result::Status::FAILURE,
+          BuildEval::Result::Status::ERROR ]
+      end
 
       it "returns the most severe status" do
-        expect(subject).to eql(BuildEval::Result::Status::FAILURE)
+        expect(subject).to eql(BuildEval::Result::Status::ERROR)
       end
 
     end
@@ -87,8 +97,9 @@ describe BuildEval::Result::Status do
     end
 
     {
+      "UNKNOWN" => BuildEval::Result::Status::UNKNOWN,
       "FAILURE" => BuildEval::Result::Status::FAILURE,
-      "UNKNOWN" => BuildEval::Result::Status::UNKNOWN
+      "ERROR"   => BuildEval::Result::Status::ERROR
     }.each do |name, status|
 
       context "when the status is #{name}" do
@@ -109,7 +120,7 @@ describe BuildEval::Result::Status do
 
     subject { status.to_sym }
 
-    { SUCCESS: :success!, FAILURE: :failed!, UNKNOWN: :warning! }.each do |name, expected_symbol|
+    { SUCCESS: :success!, UNKNOWN: :warning!, FAILURE: :failed!, ERROR: :failed! }.each do |name, expected_symbol|
 
       context "when the status is #{name}" do
 
@@ -129,7 +140,7 @@ describe BuildEval::Result::Status do
 
     subject { status.to_s }
 
-    { SUCCESS: "succeeded", FAILURE: "failed", UNKNOWN: "unknown" }.each do |name, expected_string|
+    { SUCCESS: "succeeded", UNKNOWN: "unknown", FAILURE: "failed", ERROR: "errored" }.each do |name, expected_string|
 
       context "when the status is #{name}" do
 

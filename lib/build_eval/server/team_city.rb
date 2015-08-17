@@ -1,5 +1,5 @@
 module BuildEval
-  module CIServer
+  module Server
 
     class TeamCity
 
@@ -15,7 +15,11 @@ module BuildEval
         )
         build_element = Nokogiri::XML(response.body).xpath("//build").first
         raise "Unexpected build response: #{response.message}" unless build_element
-        BuildEval::BuildResult.create(build_name: name, status_name: build_element.attribute("status").value)
+        BuildEval::Result::BuildResult.create(build_name: name, status_name: build_element.attribute("status").value)
+      end
+
+      def to_s
+        "TeamCity server #{@base_uri}"
       end
 
     end

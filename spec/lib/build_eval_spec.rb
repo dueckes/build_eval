@@ -2,7 +2,7 @@ describe BuildEval do
 
   describe "::server" do
 
-    class BuildEval::CIServer::TestableServer
+    class BuildEval::Server::TestableServer
 
       def initialize(_args)
         # Intentionally blank
@@ -17,28 +17,28 @@ describe BuildEval do
     subject { described_class.server(args) }
 
     it "constructs an instance of the server with the provided type" do
-      expect(BuildEval::CIServer::TestableServer).to receive(:new)
+      expect(BuildEval::Server::TestableServer).to receive(:new)
 
       subject
     end
 
     it "constructs the instance with additional arguments" do
-      expect(BuildEval::CIServer::TestableServer).to receive(:new).with(server_arguments)
+      expect(BuildEval::Server::TestableServer).to receive(:new).with(server_arguments)
 
       subject
     end
 
     it "decorates the server with standard server behaviour" do
-      server = instance_double(BuildEval::CIServer::TestableServer)
-      allow(BuildEval::CIServer::TestableServer).to receive(:new).and_return(server)
-      expect(BuildEval::CIServer::Decorator).to receive(:new).with(server)
+      server = instance_double(BuildEval::Server::TestableServer)
+      allow(BuildEval::Server::TestableServer).to receive(:new).and_return(server)
+      expect(BuildEval::Server::Decorator).to receive(:new).with(server)
 
       subject
     end
 
     it "returns the decorated server" do
-      server_decorator = instance_double(BuildEval::CIServer::Decorator)
-      allow(BuildEval::CIServer::Decorator).to receive(:new).and_return(server_decorator)
+      server_decorator = instance_double(BuildEval::Server::Decorator)
+      allow(BuildEval::Server::Decorator).to receive(:new).and_return(server_decorator)
 
       expect(subject).to eql(server_decorator)
     end

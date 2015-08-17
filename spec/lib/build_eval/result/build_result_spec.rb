@@ -1,4 +1,4 @@
-describe BuildEval::BuildResult do
+describe BuildEval::Result::BuildResult do
 
   describe "::create" do
 
@@ -13,14 +13,14 @@ describe BuildEval::BuildResult do
     end
 
     it "determines the status with the provided status name" do
-      expect(BuildEval::Status).to receive(:find).with(status_name)
+      expect(BuildEval::Result::Status).to receive(:find).with(status_name)
 
       subject
     end
 
     it "returns a result with the determined status" do
-      status = BuildEval::Status::UNKNOWN
-      allow(BuildEval::Status).to receive(:find).and_return(status)
+      status = BuildEval::Result::Status::UNKNOWN
+      allow(BuildEval::Result::Status).to receive(:find).and_return(status)
 
       expect(subject.status).to eql(status)
     end
@@ -38,19 +38,19 @@ describe BuildEval::BuildResult do
     end
 
     it "returns a result with an unknown status" do
-      expect(subject.status).to eql(BuildEval::Status::UNKNOWN)
+      expect(subject.status).to eql(BuildEval::Result::Status::UNKNOWN)
     end
 
   end
 
   describe "#unsuccessful?" do
 
-    let(:status)       { instance_double(BuildEval::Status) }
+    let(:status)       { instance_double(BuildEval::Result::Status) }
     let(:build_result) { described_class.create(build_name: "some build", status_name: "some status") }
 
     subject { build_result.unsuccessful? }
 
-    before(:example) { allow(BuildEval::Status).to receive(:find).and_return(status) }
+    before(:example) { allow(BuildEval::Result::Status).to receive(:find).and_return(status) }
 
     it "delegates to the underlying status" do
       allow(status).to receive(:unsuccessful?).and_return(true)
@@ -64,13 +64,13 @@ describe BuildEval::BuildResult do
 
     let(:build_name)                   { "Some build name" }
     let(:status_string_representation) { "SUCCESS" }
-    let(:status)                       { instance_double(BuildEval::Status, to_s: status_string_representation) }
+    let(:status)                       { instance_double(BuildEval::Result::Status, to_s: status_string_representation) }
 
     let(:build_result) { described_class.create(build_name: build_name, status_name: "some status") }
 
     subject { build_result.to_s }
 
-    before(:example) { allow(BuildEval::Status).to receive(:find).and_return(status) }
+    before(:example) { allow(BuildEval::Result::Status).to receive(:find).and_return(status) }
 
     it "contains the name of the build" do
       expect(subject).to include(build_name)

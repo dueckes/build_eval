@@ -1,4 +1,4 @@
-describe BuildEval::Status do
+describe BuildEval::Result::Status do
 
   describe "::find" do
 
@@ -9,7 +9,7 @@ describe BuildEval::Status do
       let(:name) { "UNKNOWN" }
 
       it "returns the constant" do
-        expect(subject).to be(BuildEval::Status::UNKNOWN)
+        expect(subject).to be(BuildEval::Result::Status::UNKNOWN)
       end
 
     end
@@ -19,7 +19,7 @@ describe BuildEval::Status do
       let(:name) { "Success" }
 
       it "returns the constant" do
-        expect(subject).to be(BuildEval::Status::SUCCESS)
+        expect(subject).to be(BuildEval::Result::Status::SUCCESS)
       end
 
     end
@@ -42,30 +42,30 @@ describe BuildEval::Status do
 
     context "when a single status is provided" do
 
-      let(:statuses) { [ BuildEval::Status::UNKNOWN ] }
+      let(:statuses) { [ BuildEval::Result::Status::UNKNOWN ] }
 
       it "returns the status" do
-        expect(subject).to eql(BuildEval::Status::UNKNOWN)
+        expect(subject).to eql(BuildEval::Result::Status::UNKNOWN)
       end
 
     end
 
     context "when the statuses are ordered in descending severity" do
 
-      let(:statuses) { [ BuildEval::Status::FAILURE, BuildEval::Status::UNKNOWN, BuildEval::Status::SUCCESS ] }
+      let(:statuses) { [ BuildEval::Result::Status::FAILURE, BuildEval::Result::Status::UNKNOWN, BuildEval::Result::Status::SUCCESS ] }
 
       it "returns the most severe status" do
-        expect(subject).to eql(BuildEval::Status::FAILURE)
+        expect(subject).to eql(BuildEval::Result::Status::FAILURE)
       end
 
     end
 
     context "when the statuses are ordered in ascending severity" do
 
-      let(:statuses) { [ BuildEval::Status::SUCCESS, BuildEval::Status::UNKNOWN, BuildEval::Status::FAILURE ] }
+      let(:statuses) { [ BuildEval::Result::Status::SUCCESS, BuildEval::Result::Status::UNKNOWN, BuildEval::Result::Status::FAILURE ] }
 
       it "returns the most severe status" do
-        expect(subject).to eql(BuildEval::Status::FAILURE)
+        expect(subject).to eql(BuildEval::Result::Status::FAILURE)
       end
 
     end
@@ -78,7 +78,7 @@ describe BuildEval::Status do
 
     context "when the status is SUCCESS" do
 
-      let(:status) { BuildEval::Status::SUCCESS }
+      let(:status) { BuildEval::Result::Status::SUCCESS }
 
       it "returns false" do
         expect(subject).to be(false)
@@ -87,8 +87,8 @@ describe BuildEval::Status do
     end
 
     {
-      "FAILURE" => BuildEval::Status::FAILURE,
-      "UNKNOWN" => BuildEval::Status::UNKNOWN
+      "FAILURE" => BuildEval::Result::Status::FAILURE,
+      "UNKNOWN" => BuildEval::Result::Status::UNKNOWN
     }.each do |name, status|
 
       context "when the status is #{name}" do
@@ -113,7 +113,7 @@ describe BuildEval::Status do
 
       context "when the status is #{name}" do
 
-        let(:status) { BuildEval::Status.const_get(name) }
+        let(:status) { BuildEval::Result::Status.const_get(name) }
 
         it "returns success!" do
           expect(subject).to eql(expected_symbol)
@@ -133,7 +133,7 @@ describe BuildEval::Status do
 
       context "when the status is #{name}" do
 
-        let(:status) { BuildEval::Status.const_get(name) }
+        let(:status) { BuildEval::Result::Status.const_get(name) }
 
         it "returns success!" do
           expect(subject).to eql(expected_string)

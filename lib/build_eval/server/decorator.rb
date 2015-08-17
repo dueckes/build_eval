@@ -1,5 +1,5 @@
 module BuildEval
-  module CIServer
+  module Server
 
     class Decorator
 
@@ -11,12 +11,12 @@ module BuildEval
         begin
           @delegate.build_result(name)
         rescue Exception
-          BuildEval::BuildResult.unknown(name)
+          BuildEval::Result::BuildResult.unknown(name)
         end
       end
 
       def monitor(*build_names)
-        BuildEval::Monitor.new(server: @delegate, build_names: build_names.flatten)
+        BuildEval::Monitor::Server.new(server: @delegate, build_names: build_names.flatten)
       end
 
     end

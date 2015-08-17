@@ -1,4 +1,4 @@
-describe BuildEval::CIServer::TeamCity do
+describe BuildEval::Server::TeamCity do
 
   let(:uri)      { "https://some.teamcity.server" }
   let(:username) { "some_username" }
@@ -49,20 +49,22 @@ describe BuildEval::CIServer::TeamCity do
       end
 
       it "creates a build result containing the build name" do
-        expect(BuildEval::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
+        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
 
         subject
       end
 
       it "creates a build result containing the latest build status" do
-        expect(BuildEval::BuildResult).to receive(:create).with(hash_including(status_name: latest_build_status))
+        expect(BuildEval::Result::BuildResult).to(
+          receive(:create).with(hash_including(status_name: latest_build_status))
+        )
 
         subject
       end
 
       it "returns the created result" do
-        build_result = instance_double(BuildEval::BuildResult)
-        allow(BuildEval::BuildResult).to receive(:create).and_return(build_result)
+        build_result = instance_double(BuildEval::Result::BuildResult)
+        allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
 
         expect(subject).to eql(build_result)
       end
@@ -96,6 +98,20 @@ describe BuildEval::CIServer::TeamCity do
         expect { subject }.to raise_error(/Not Found/)
       end
 
+    end
+
+  end
+
+  describe "#to_s" do
+
+    subject { team_city.to_s }
+
+    it "returns a string indicating it is a TeamCity server" do
+      expect(subject).to include("TeamCity")
+    end
+
+    it "returns a string containing the uri to the server" do
+      expect(subject).to include(uri)
     end
 
   end

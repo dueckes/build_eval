@@ -47,7 +47,7 @@ Currently supports:
 
 #### Reporting Results ####
 
-This example uses the [blinky gem](https://github.com/perryn/blinky) to show the build statuses on a USB light.
+This example uses the [blinky gem](https://github.com/perryn/blinky) to show the net status of builds on a USB light.
 
 ```ruby
   require 'blinky'
@@ -65,7 +65,7 @@ This example uses the [blinky gem](https://github.com/perryn/blinky) to show the
   end
 ```
 
-#### Combining Results #### 
+#### Combining Results ####
 
 ```ruby
   combined_monitor = teamcity_monitor + travis_monitor

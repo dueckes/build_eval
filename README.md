@@ -4,8 +4,10 @@ Because the status of continuous integration environment statuses should be easy
 
 ## Status ##
 
-[![Build Status](https://travis-ci.org/MYOB-Technology/build_eval.png)](https://travis-ci.org/MYOB-Technology/build_eval)
 [![Gem Version](https://badge.fury.io/rb/build_eval.svg)](http://badge.fury.io/rb/build_eval)
+[![Build Status](https://travis-ci.org/MYOB-Technology/build_eval.png)](https://travis-ci.org/MYOB-Technology/build_eval)
+[![Code Climate](https://codeclimate.com/github/MYOB-Technology/build_eval/badges/gpa.svg)](https://codeclimate.com/github/MYOB-Technology/build_eval)
+[![Test Coverage](https://codeclimate.com/github/MYOB-Technology/build_eval/badges/coverage.svg)](https://codeclimate.com/github/MYOB-Technology/build_eval/coverage)
 [![Dependency Status](https://gemnasium.com/MYOB-Technology/build_eval.png)](https://gemnasium.com/MYOB-Technology/build_eval)
 
 ## Usage ##

@@ -45,14 +45,28 @@ Currently supports:
   ).monitor("build_1", "build_2", "build_3")
 ```
 
+### Jenkins CI Integration ###
+```ruby
+  require 'build_eval'
+  jenkins_monitor = BuildEval.server(
+      type: :Jenkins,
+      uri: "http://some.server"
+  ).monitor("build_1")
+```
+
 #### Reporting Results ####
 
 This example uses the [blinky gem](https://github.com/perryn/blinky) to show the net status of builds on a USB light.
 
 ```ruby
   require 'blinky'
+  require 'build_eval'
 
   light = Blinky.new.light
+  my_monitor = BuildEval.server(
+      type: :Jenkins,
+      uri: "http://some.server"
+  ).monitor("build_1")
 
   loop do
     # Evaluates status of monitored builds

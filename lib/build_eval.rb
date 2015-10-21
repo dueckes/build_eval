@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'uri'
 require 'net/http'
+require 'net/https'
 require_relative 'build_eval/http'
 require_relative 'build_eval/result/status'
 require_relative 'build_eval/result/build_result'

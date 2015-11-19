@@ -27,10 +27,10 @@ Currently supports:
   require 'build_eval'
 
   teamcity_monitor = BuildEval.server(
-    type:     :TeamCity,
+    type:     :TeamCity, # Note: TeamCity servers only use basic authentication
     uri:      "https://some.teamcity.server",
     username: "guest",
-    password: "guest" # Note: Only uses basic authentication
+    password: "guest"
   ).monitor("build_1", "build_2", "build_3")
 ```
 

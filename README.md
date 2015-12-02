@@ -26,11 +26,21 @@ Currently supports:
 ```ruby
   require 'build_eval'
 
-  teamcity_monitor = BuildEval.server(
-    type:     :TeamCity, # Note: TeamCity monitor's only use basic authentication
+  my_monitor = BuildEval.server(
+    type:     :TeamCity, # Note: TeamCity servers only support basic authentication
     uri:      "https://some.teamcity.server",
     username: "guest",
     password: "guest"
+  ).monitor("build_1", "build_2", "build_3")
+```
+
+### Jenkins CI Integration ###
+```ruby
+  require 'build_eval'
+
+  my_monitor = BuildEval.server(
+      type: :Jenkins,
+      uri: "http://some.jenkins.server"
   ).monitor("build_1", "build_2", "build_3")
 ```
 
@@ -39,19 +49,10 @@ Currently supports:
 ```ruby
   require 'build_eval'
 
-  travis_monitor = BuildEval.server(
+  my_monitor = BuildEval.server(
     type:     :Travis,
     username: "my_username"
   ).monitor("build_1", "build_2", "build_3")
-```
-
-### Jenkins CI Integration ###
-```ruby
-  require 'build_eval'
-  jenkins_monitor = BuildEval.server(
-      type: :Jenkins,
-      uri: "http://some.server"
-  ).monitor("build_1")
 ```
 
 #### Reporting Results ####
@@ -63,14 +64,10 @@ This example uses the [blinky gem](https://github.com/perryn/blinky) to show the
   require 'build_eval'
 
   light = Blinky.new.light
-  my_monitor = BuildEval.server(
-      type: :Jenkins,
-      uri: "http://some.server"
-  ).monitor("build_1")
 
   loop do
     # Evaluates status of monitored builds
-    results = my_monitor.evaluate 
+    results = my_monitor.evaluate
 
     # Determine the overall status
     light.send(results.status.to_sym)
@@ -82,7 +79,7 @@ This example uses the [blinky gem](https://github.com/perryn/blinky) to show the
 #### Combining Results ####
 
 ```ruby
-  combined_monitor = teamcity_monitor + travis_monitor
+  combined_monitor = a_teamcity_monitor + a_travis_monitor
 ```
 
 ## Installation ##

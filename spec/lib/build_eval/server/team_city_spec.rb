@@ -20,14 +20,14 @@ describe BuildEval::Server::TeamCity do
 
     before(:example) { allow(BuildEval::Http).to receive(:get).and_return(response) }
 
-    it "issues a get request for the build" do
+    it "issues a GET request for the build" do
       expected_uri = "#{uri}/httpAuth/app/rest/buildTypes/id:#{build_name}/builds"
       expect(BuildEval::Http).to receive(:get).with(expected_uri, anything)
 
       subject rescue Exception
     end
 
-    it "issues a get request with the provided basic authentication credentials" do
+    it "issues a GET request with the provided basic authentication credentials" do
       expect(BuildEval::Http).to receive(:get).with(anything, username: username, password: password)
 
       subject rescue Exception

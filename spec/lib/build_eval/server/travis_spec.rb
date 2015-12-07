@@ -6,17 +6,20 @@ describe BuildEval::Server::Travis do
 
   describe "#build_result" do
 
-    let(:build_name)       { "some_build_name" }
-    let(:response_code)    { nil }
-    let(:response_message) { nil }
-    let(:response_body)    { nil }
-    let(:response)         do
-      instance_double(Net::HTTPResponse, code: response_code, message: response_message, body: response_body)
+    let(:build_name)              { "some_build_name" }
+    let(:response)                { instance_double(Net::HTTPResponse) }
+    let(:build_result)            { instance_double(BuildEval::Result::BuildResult) }
+    let(:cruise_control_response) do
+      instance_double(BuildEval::Server::CruiseControlResponse, parse_result: build_result)
     end
 
     subject { travis.build_result(build_name) }
 
-    before(:example) { allow(BuildEval::Http).to receive(:get).and_return(response) }
+    before(:example) do
+      allow(BuildEval::Http).to receive(:get).and_return(response)
+      allow(BuildEval::Server::CruiseControlResponse).to receive(:new).and_return(cruise_control_response)
+      allow(cruise_control_response).to receive(:parse_result).and_return(build_result)
+    end
 
     it "issues a get request for the build" do
       expected_uri = "https://api.travis-ci.org/repositories/#{username}/#{build_name}/cc.xml"
@@ -25,52 +28,20 @@ describe BuildEval::Server::Travis do
       subject rescue Exception
     end
 
-    context "when the server responds with build results" do
+    it "creates a Cruise Control response containing the GET request response" do
+      expect(BuildEval::Server::CruiseControlResponse).to receive(:new).with(response)
 
-      let(:response_code)       { "200" }
-      let(:response_message)    { "OK" }
-      let(:latest_build_status) { "Success" }
-      let(:response_body)       do
-        <<-RESPONSE
-          <Projects>
-            <Project name="#{username}/#{build_name}" activity="Sleeping" lastBuildStatus="#{latest_build_status}" lastBuildLabel="2" lastBuildTime="2015-08-13T08:31:27.000+0000" webUrl="https://travis-ci.org/#{username}/#{build_name}" />
-          </Projects>
-        RESPONSE
-      end
-
-      it "creates a build result containing the build name" do
-        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
-
-        subject
-      end
-
-      it "creates a build result containing the latest build status" do
-        expect(BuildEval::Result::BuildResult).to(
-          receive(:create).with(hash_including(status_name: latest_build_status))
-        )
-
-        subject
-      end
-
-      it "returns the created result" do
-        build_result = instance_double(BuildEval::Result::BuildResult)
-        allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
-
-        expect(subject).to eql(build_result)
-      end
-
+      subject
     end
 
-    context "when the build is not found" do
+    it "parses the Cruise Control response to return the project" do
+      expect(cruise_control_response).to receive(:parse_result).with("//Project")
 
-      let(:response_code)    { "404" }
-      let(:response_message) { "Not Found" }
-      let(:response_body)    { { "file" => "not found" }.to_json }
+      subject
+    end
 
-      it "raises an error" do
-        expect { subject }.to raise_error(/Not Found/)
-      end
-
+    it "returns the parsed build result" do
+      expect(subject).to eql(build_result)
     end
 
   end

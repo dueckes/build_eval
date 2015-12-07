@@ -18,18 +18,31 @@ task :metrics do
   print `metric_fu --no-open`
 end
 
-desc "Exercises specifications"
-::RSpec::Core::RakeTask.new(:spec)
+desc "Exercises unit specifications"
+RSpec::Core::RakeTask.new(:unit) do |task|
+  task.rspec_opts = "--tag ~integration --tag ~smoke"
+end
 
-desc "Exercises specifications with coverage analysis"
+desc "Exercises integration specifications"
+RSpec::Core::RakeTask.new(:integration) do |task|
+  task.pattern = "spec/**/*integration_spec.rb"
+end
+
+desc "Exercises smoke specifications"
+RSpec::Core::RakeTask.new(:smoke) do |task|
+  task.pattern = "spec/**/*smoke_spec.rb"
+end
+
+desc "Exercises unit specifications with coverage analysis"
 task :coverage => "coverage:generate"
 
 namespace :coverage do
 
-  desc "Generates specification coverage results"
+  desc "Generates unit specification coverage results"
   task :generate do
     ENV["coverage"] = "enabled"
-    Rake::Task[:spec].invoke
+    Rake::Task[:unit].invoke
+    ENV["coverage"] = nil
   end
 
   desc "Shows specification coverage results in browser"
@@ -51,6 +64,6 @@ task :validate do
   raise "Travis CI validation failed" unless $?.success?
 end
 
-task :default => %w{ clobber metrics coverage }
+task :default => %w{ clobber metrics coverage integration smoke }
 
 task :pre_commit => %w{ clobber metrics coverage:show validate }

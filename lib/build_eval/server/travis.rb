@@ -8,12 +8,8 @@ module BuildEval
       end
 
       def build_result(name)
-        response = BuildEval::Http.get("https://api.travis-ci.org/repositories/#{@username}/#{name}/cc.xml")
-        build_element = Nokogiri::XML(response.body).xpath("//Project").first
-        raise "Unexpected build response: #{response.message}" unless build_element
-        BuildEval::Result::BuildResult.create(
-          build_name: name, status_name: build_element.attribute("lastBuildStatus").value
-        )
+        raw_response = BuildEval::Http.get("https://api.travis-ci.org/repositories/#{@username}/#{name}/cc.xml")
+        BuildEval::Server::CruiseControlResponse.new(raw_response).parse_result("//Project")
       end
 
       def to_s

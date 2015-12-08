@@ -11,7 +11,7 @@ module BuildEval
         begin
           @delegate.build_result(name)
         rescue Exception
-          BuildEval::Result::BuildResult.unknown(name)
+          BuildEval::Result::BuildResult.indeterminate(name)
         end
       end
 

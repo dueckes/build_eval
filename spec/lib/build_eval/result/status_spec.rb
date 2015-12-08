@@ -50,13 +50,16 @@ describe BuildEval::Result::Status do
 
     end
 
-    context "when the statuses are ordered in descending severity" do
+    context "when the statuses are ordered in ascending severity" do
 
       let(:statuses) do
-        [ BuildEval::Result::Status::ERROR,
+        [
+          BuildEval::Result::Status::ERROR,
           BuildEval::Result::Status::FAILURE,
           BuildEval::Result::Status::UNKNOWN,
-          BuildEval::Result::Status::SUCCESS ]
+          BuildEval::Result::Status::INDETERMINATE,
+          BuildEval::Result::Status::SUCCESS
+        ]
       end
 
       it "returns the most severe status" do
@@ -65,13 +68,16 @@ describe BuildEval::Result::Status do
 
     end
 
-    context "when the statuses are ordered in ascending severity" do
+    context "when the statuses are ordered in descending severity" do
 
       let(:statuses) do
-        [ BuildEval::Result::Status::SUCCESS,
+        [
+          BuildEval::Result::Status::SUCCESS,
           BuildEval::Result::Status::UNKNOWN,
+          BuildEval::Result::Status::INDETERMINATE,
           BuildEval::Result::Status::FAILURE,
-          BuildEval::Result::Status::ERROR ]
+          BuildEval::Result::Status::ERROR
+        ]
       end
 
       it "returns the most severe status" do
@@ -97,9 +103,10 @@ describe BuildEval::Result::Status do
     end
 
     {
-      "UNKNOWN" => BuildEval::Result::Status::UNKNOWN,
-      "FAILURE" => BuildEval::Result::Status::FAILURE,
-      "ERROR"   => BuildEval::Result::Status::ERROR
+      "UNKNOWN"       => BuildEval::Result::Status::UNKNOWN,
+      "FAILURE"       => BuildEval::Result::Status::FAILURE,
+      "ERROR"         => BuildEval::Result::Status::ERROR,
+      "INDETERMINATE" => BuildEval::Result::Status::INDETERMINATE
     }.each do |name, status|
 
       context "when the status is #{name}" do
@@ -120,7 +127,13 @@ describe BuildEval::Result::Status do
 
     subject { status.to_sym }
 
-    { SUCCESS: :success!, UNKNOWN: :warning!, FAILURE: :failure!, ERROR: :failure! }.each do |name, expected_symbol|
+    {
+      SUCCESS:       :success!,
+      UNKNOWN:       :warning!,
+      INDETERMINATE: :warning!,
+      FAILURE:       :failure!,
+      ERROR:         :failure!
+    }.each do |name, expected_symbol|
 
       context "when the status is #{name}" do
 
@@ -140,7 +153,13 @@ describe BuildEval::Result::Status do
 
     subject { status.to_s }
 
-    { SUCCESS: "succeeded", UNKNOWN: "unknown", FAILURE: "failed", ERROR: "errored" }.each do |name, expected_string|
+    {
+      SUCCESS:       "succeeded",
+      UNKNOWN:       "unknown",
+      INDETERMINATE: "indeterminate",
+      FAILURE:       "failed",
+      ERROR:         "errored"
+    }.each do |name, expected_string|
 
       context "when the status is #{name}" do
 

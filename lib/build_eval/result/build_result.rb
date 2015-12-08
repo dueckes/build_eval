@@ -9,8 +9,8 @@ module BuildEval
           self.new(build_name: args[:build_name], status: BuildEval::Result::Status.find(args[:status_name]))
         end
 
-        def unknown(build_name)
-          self.new(build_name: build_name, status: BuildEval::Result::Status::UNKNOWN)
+        def indeterminate(build_name)
+          self.new(build_name: build_name, status: BuildEval::Result::Status::INDETERMINATE)
         end
 
       end

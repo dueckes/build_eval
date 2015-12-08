@@ -32,17 +32,17 @@ describe BuildEval::Server::Decorator do
 
       before(:example) { allow(server).to receive(:build_result).and_raise("Forced error") }
 
-      it "creates an unknown result" do
-        expect(BuildEval::Result::BuildResult).to receive(:unknown).with(build_name)
+      it "creates an indeterminate result" do
+        expect(BuildEval::Result::BuildResult).to receive(:indeterminate).with(build_name)
 
         subject
       end
 
-      it "returns the unknown result" do
-        unknown_build_result = instance_double(BuildEval::Result::BuildResult)
-        allow(BuildEval::Result::BuildResult).to receive(:unknown).and_return(unknown_build_result)
+      it "returns the indeterminate result" do
+        indeterminate_result = instance_double(BuildEval::Result::BuildResult)
+        allow(BuildEval::Result::BuildResult).to receive(:indeterminate).and_return(indeterminate_result)
 
-        expect(subject).to eql(unknown_build_result)
+        expect(subject).to eql(indeterminate_result)
       end
 
     end

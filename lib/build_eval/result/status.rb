@@ -13,10 +13,11 @@ module BuildEval
 
       public
 
-      SUCCESS = self.new(severity: 0, symbol: :success!, description: "succeeded")
-      UNKNOWN = self.new(severity: 1, symbol: :warning!, description: "unknown")
-      FAILURE = self.new(severity: 2, symbol: :failure!,  description: "failed")
-      ERROR   = self.new(severity: 3, symbol: :failure!,  description: "errored")
+      SUCCESS       = self.new(severity: 0, symbol: :success!, description: "succeeded")
+      UNKNOWN       = self.new(severity: 1, symbol: :warning!, description: "unknown")
+      INDETERMINATE = self.new(severity: 2, symbol: :warning!, description: "indeterminate")
+      FAILURE       = self.new(severity: 3, symbol: :failure!, description: "failed")
+      ERROR         = self.new(severity: 4, symbol: :failure!, description: "errored")
 
       class << self
 

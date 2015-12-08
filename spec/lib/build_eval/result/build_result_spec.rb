@@ -27,18 +27,18 @@ describe BuildEval::Result::BuildResult do
 
   end
 
-  describe "::unknown" do
+  describe "::indeterminate" do
 
     let(:build_name) { "Some build name" }
 
-    subject { described_class.unknown(build_name) }
+    subject { described_class.indeterminate(build_name) }
 
     it "returns a result with the provided build name" do
       expect(subject.build_name).to eql(build_name)
     end
 
-    it "returns a result with an unknown status" do
-      expect(subject.status).to eql(BuildEval::Result::Status::UNKNOWN)
+    it "returns a result with an indeterminate status" do
+      expect(subject.status).to eql(BuildEval::Result::Status::INDETERMINATE)
     end
 
   end

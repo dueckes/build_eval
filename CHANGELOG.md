@@ -11,3 +11,7 @@
 ** 0.0.3 **
 
 Failure and Error status symbols mirror Blinky
+
+** 0.0.4 **
+
++ Jenkins support, trusted connection only

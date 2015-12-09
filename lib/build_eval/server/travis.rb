@@ -4,11 +4,12 @@ module BuildEval
     class Travis
 
       def initialize(args)
+        @http     = BuildEval::Http.new(args)
         @username = args[:username]
       end
 
       def build_result(name)
-        raw_response = BuildEval::Http.get("https://api.travis-ci.org/repositories/#{@username}/#{name}/cc.xml")
+        raw_response = @http.get("https://api.travis-ci.org/repositories/#{@username}/#{name}/cc.xml")
         BuildEval::Server::CruiseControlResponse.new(raw_response).parse_result("//Project")
       end
 

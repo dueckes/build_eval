@@ -3,12 +3,13 @@ module BuildEval
 
     class Jenkins
 
-      def initialize(args = {})
+      def initialize(args)
+        @http     = BuildEval::Http.new(args)
         @base_uri = args[:uri]
       end
 
       def build_result(name)
-        raw_response = BuildEval::Http.get("#{@base_uri}/cc.xml")
+        raw_response = @http.get("#{@base_uri}/cc.xml")
         BuildEval::Server::CruiseControlResponse.new(raw_response).parse_result("//Project[@name=\"#{name}\"]")
       end
 

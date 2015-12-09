@@ -14,4 +14,5 @@ Failure and Error status symbols mirror Blinky
 
 ** 0.0.4 **
 
-+ Jenkins support, trusted connection only
++ Jenkins support
++ ssl verify mode is configurable per server

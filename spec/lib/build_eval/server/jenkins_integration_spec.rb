@@ -1,6 +1,7 @@
-describe BuildEval::Server::Jenkins, "integrating with the response parser", integration: true do
+describe BuildEval::Server::Jenkins, "integrating with a response parser", integration: true do
+  include_context "stubbed http interactions"
 
-  let(:uri)     { "https://some.jenkins.server" }
+  let(:uri) { "https://some.jenkins.server" }
 
   let(:jenkins) { described_class.new(uri: uri) }
 
@@ -11,7 +12,7 @@ describe BuildEval::Server::Jenkins, "integrating with the response parser", int
 
     subject { jenkins.build_result(build_name) }
 
-    before(:example) { allow(BuildEval::Http).to receive(:get).and_return(response) }
+    before(:example) { allow(http).to receive(:get).and_return(response) }
 
     context "when the server responds successfully with build results" do
 

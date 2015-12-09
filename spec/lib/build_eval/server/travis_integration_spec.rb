@@ -1,4 +1,5 @@
-describe BuildEval::Server::Travis, "integrating with the response parser", integration: true do
+describe BuildEval::Server::Travis, "integrating with a response parser", integration: true do
+  include_context "stubbed http interactions"
 
   let(:username) { "some_username" }
 
@@ -11,7 +12,7 @@ describe BuildEval::Server::Travis, "integrating with the response parser", inte
 
     subject { travis.build_result(build_name) }
 
-    before(:example) { allow(BuildEval::Http).to receive(:get).and_return(response) }
+    before(:example) { allow(http).to receive(:get).and_return(response) }
 
     context "when the server responds successfully with build results" do
 

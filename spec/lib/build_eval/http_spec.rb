@@ -1,5 +1,9 @@
 describe BuildEval::Http do
 
+  let(:config) { {} }
+
+  let(:http)   { described_class.new(config) }
+
   shared_examples_for "a http method returning a response" do
 
     let(:response_status) { [ "200", "OK" ] }
@@ -19,14 +23,14 @@ describe BuildEval::Http do
 
   end
 
-  describe "::get" do
+  describe "#get" do
 
     let(:scheme)     { "http" }
     let(:host)       { "a.host" }
     let(:path)       { "some/path" }
     let(:uri_string) { "#{scheme}://#{host}/#{path}" }
 
-    subject { described_class.get(uri_string) }
+    subject { http.get(uri_string) }
 
     context "when the uri is valid" do
 
@@ -52,14 +56,30 @@ describe BuildEval::Http do
 
       end
 
-      context "and basic authentication is provided" do
+      context "and an ssl verification mode configuration option was established" do
+
+        let(:ssl_verification_mode) { OpenSSL::SSL::VERIFY_NONE }
+        let(:config)                { { ssl_verify_mode: ssl_verification_mode } }
+
+        it_behaves_like "a http method returning a response"
+
+      end
+
+      context "and partial authentication configuration options were established" do
+
+        let(:config)   { { username: "some_username" } }
+
+        it_behaves_like "a http method returning a response"
+
+      end
+
+      context "and basic authentication configuration options were established" do
 
         let(:username) { "some_username" }
         let(:password) { "some_password" }
+        let(:config)   { { username: username, password: password } }
 
         let(:expected_request_uri) { "#{scheme}://#{username}:#{password}@#{host}/#{path}" }
-
-        subject { described_class.get(uri_string, basic_authentication: { username: username, password: password }) }
 
         it_behaves_like "a http method returning a response"
 

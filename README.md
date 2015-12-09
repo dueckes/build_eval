@@ -40,7 +40,7 @@ Currently supports:
 
   my_monitor = BuildEval.server(
       type: :Jenkins,
-      uri: "http://some.jenkins.server"
+      uri:  "http://some.jenkins.server"
   ).monitor("build_1", "build_2", "build_3")
 ```
 
@@ -80,6 +80,18 @@ This example uses the [blinky gem](https://github.com/perryn/blinky) to show the
 
 ```ruby
   combined_monitor = a_teamcity_monitor + a_travis_monitor
+```
+
+### SSL Options ###
+
+```ruby
+  require 'build_eval'
+
+  my_monitor = BuildEval.server(
+    type:            :Jenkins,
+    uri:             "http://some.firewalled.server",
+    ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE # Configurable for any server type
+  ).monitor("some_build")
 ```
 
 ## Installation ##

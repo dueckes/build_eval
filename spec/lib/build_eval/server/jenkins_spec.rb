@@ -1,7 +1,16 @@
 describe BuildEval::Server::Jenkins do
+  include_context "stubbed http interactions"
 
-  let(:uri)     { "https://some.jenkins.server" }
-  let(:jenkins) { described_class.new(uri: uri) }
+  let(:uri)              { "https://some.jenkins.server" }
+  let(:constructor_args) { { uri: uri } }
+
+  let(:jenkins_server) { described_class.new(constructor_args) }
+
+  it_behaves_like "a continuous integration server" do
+
+    let(:server) { jenkins_server }
+
+  end
 
   describe "#build_result" do
 
@@ -12,17 +21,16 @@ describe BuildEval::Server::Jenkins do
       instance_double(BuildEval::Server::CruiseControlResponse, parse_result: build_result)
     end
 
-    subject { jenkins.build_result(build_name) }
+    subject { jenkins_server.build_result(build_name) }
 
     before(:example) do
-      allow(BuildEval::Http).to receive(:get).and_return(response)
+      allow(http).to receive(:get).and_return(response)
       allow(BuildEval::Server::CruiseControlResponse).to receive(:new).and_return(cruise_control_response)
       allow(cruise_control_response).to receive(:parse_result).and_return(build_result)
     end
 
     it "issues a GET request for the build" do
-      expected_uri = "#{uri}/cc.xml"
-      expect(BuildEval::Http).to receive(:get).with(expected_uri)
+      expect(http).to receive(:get).with("#{uri}/cc.xml")
 
       subject
     end
@@ -45,18 +53,18 @@ describe BuildEval::Server::Jenkins do
 
   end
 
-  describe "#to_s" do
+    describe "#to_s" do
 
-    subject { jenkins.to_s }
+      subject { jenkins_server.to_s }
 
-    it "returns a string indicating it is a Jenkins server" do
-      expect(subject).to include("Jenkins server")
+      it "returns a string indicating it is a Jenkins server" do
+        expect(subject).to include("Jenkins server")
+      end
+
+      it "returns a string containing the username" do
+        expect(subject).to include(uri)
+      end
+
     end
-
-    it "returns a string containing the username" do
-      expect(subject).to include(uri)
-    end
-
-  end
 
 end

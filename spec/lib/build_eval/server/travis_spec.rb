@@ -1,8 +1,16 @@
 describe BuildEval::Server::Travis do
+  include_context "stubbed http interactions"
 
-  let(:username) { "some_username" }
+  let(:username)         { "some_username" }
+  let(:constructor_args) { { username: username } }
 
-  let(:travis) { described_class.new(username: username) }
+  let(:travis_server) { described_class.new(constructor_args) }
+
+  it_behaves_like "a continuous integration server" do
+
+    let(:server) { travis_server }
+
+  end
 
   describe "#build_result" do
 
@@ -13,17 +21,16 @@ describe BuildEval::Server::Travis do
       instance_double(BuildEval::Server::CruiseControlResponse, parse_result: build_result)
     end
 
-    subject { travis.build_result(build_name) }
+    subject { travis_server.build_result(build_name) }
 
     before(:example) do
-      allow(BuildEval::Http).to receive(:get).and_return(response)
+      allow(http).to receive(:get).and_return(response)
       allow(BuildEval::Server::CruiseControlResponse).to receive(:new).and_return(cruise_control_response)
       allow(cruise_control_response).to receive(:parse_result).and_return(build_result)
     end
 
-    it "issues a get request for the build" do
-      expected_uri = "https://api.travis-ci.org/repositories/#{username}/#{build_name}/cc.xml"
-      expect(BuildEval::Http).to receive(:get).with(expected_uri)
+    it "issues a GET request for the build" do
+      expect(http).to receive(:get).with("https://api.travis-ci.org/repositories/#{username}/#{build_name}/cc.xml")
 
       subject rescue Exception
     end
@@ -48,7 +55,7 @@ describe BuildEval::Server::Travis do
 
   describe "#to_s" do
 
-    subject { travis.to_s }
+    subject { travis_server.to_s }
 
     it "returns a string indicating it uses the Travis CI service" do
       expect(subject).to include("Travis CI")

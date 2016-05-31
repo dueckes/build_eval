@@ -1,20 +1,17 @@
 describe BuildEval::Server::CruiseControlResponse do
-
-  let(:raw_response) { double("RawResponse", body: response_body) }
+  let(:raw_response) { double('RawResponse', body: response_body) }
 
   let(:cruise_control_response) { described_class.new(raw_response) }
 
-  describe "#parse_result" do
-
-    let(:build_name)          { "some_build_name" }
+  describe '#parse_result' do
+    let(:build_name)          { 'some_build_name' }
     let(:response_build_name) { build_name }
-    let(:project_selector)    { "//Project[2]" }
+    let(:project_selector)    { '//Project[2]' }
 
     subject { cruise_control_response.parse_result(project_selector) }
 
-    context "when the response is successful, containing projects" do
-
-      let(:latest_build_status) { "Success" }
+    context 'when the response is successful, containing projects' do
+      let(:latest_build_status) { 'Success' }
       let(:response_body) do
         <<-RESPONSE
           <Projects>
@@ -25,31 +22,26 @@ describe BuildEval::Server::CruiseControlResponse do
         RESPONSE
       end
 
-      context "and the selector matches a project" do
-
-        context "and the build name in the response is not a path" do
-
-          it "creates a build result with the build name from the response" do
+      context 'and the selector matches a project' do
+        context 'and the build name in the response is not a path' do
+          it 'creates a build result with the build name from the response' do
             expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
 
             subject
           end
-
         end
 
-        context "and the build name in the response is a path" do
-
+        context 'and the build name in the response is a path' do
           let(:response_build_name) { "some/path/to/#{build_name}" }
 
-          it "creates a build result with the build name from the response with the path omitted" do
+          it 'creates a build result with the build name from the response with the path omitted' do
             expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
 
             subject
           end
-
         end
 
-        it "creates a build result containing the latest build status" do
+        it 'creates a build result containing the latest build status' do
           expect(BuildEval::Result::BuildResult).to(
             receive(:create).with(hash_including(status_name: latest_build_status))
           )
@@ -57,59 +49,59 @@ describe BuildEval::Server::CruiseControlResponse do
           subject
         end
 
-        it "returns the created result" do
+        it 'returns the created result' do
           build_result = instance_double(BuildEval::Result::BuildResult)
           allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
 
           expect(subject).to eql(build_result)
         end
-
       end
 
-      context "and the selector does not match a project" do
-
-        let(:project_selector) { "does_not_match" }
-        let(:error)            { "an error" }
+      context 'and the selector does not match a project' do
+        let(:project_selector) { 'does_not_match' }
+        let(:error)            { 'an error' }
 
         before(:example) { allow(BuildEval::Server::InvalidSelectorError).to receive(:new).and_return(error) }
 
-        it "creates an invalid selector error" do
+        it 'creates an invalid selector error' do
           expect(BuildEval::Server::InvalidSelectorError).to(
             receive(:new).with(raw_response, project_selector).and_return(error)
           )
 
-          subject rescue Exception
+          begin
+            subject
+          rescue
+            Exception
+          end
         end
 
-        it "raises the error" do
+        it 'raises the error' do
           expect { subject }.to raise_error(error)
         end
-
       end
-
     end
 
-    context "when the response is in error" do
-
-      let(:response_body) { { "file" => "not found" }.to_json }
-      let(:error)         { "an error" }
+    context 'when the response is in error' do
+      let(:response_body) { { 'file' => 'not found' }.to_json }
+      let(:error)         { 'an error' }
 
       before(:example) { allow(BuildEval::Server::InvalidSelectorError).to receive(:new).and_return(error) }
 
-      it "creates an invalid selector error" do
+      it 'creates an invalid selector error' do
         expect(BuildEval::Server::InvalidSelectorError).to(
           receive(:new).with(raw_response, project_selector).and_return(error)
         )
 
-        subject rescue Exception
+        begin
+          subject
+        rescue
+          Exception
+        end
       end
 
-      it "raises an invalid selector error" do
+      it 'raises an invalid selector error' do
         expect { subject }.to raise_error(error)
       end
-
     end
-
   end
-
 end

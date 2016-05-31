@@ -1,13 +1,13 @@
 require 'bundler'
 Bundler.require(:development)
 
-if ENV["coverage"]
+if ENV['coverage']
   CodeClimate::TestReporter.start
 
   SimpleCov.start do
-    coverage_dir "tmp/coverage"
+    coverage_dir 'tmp/coverage'
 
-    add_filter "/spec/"
+    add_filter '/spec/'
 
     minimum_coverage 100
     refuse_coverage_drop
@@ -16,6 +16,6 @@ end
 
 require_relative '../lib/build_eval'
 
-%w{ shared_examples shared_context }.each do |file_type|
+%w( shared_examples shared_context ).each do |file_type|
   Dir[::File.expand_path("../**/*_#{file_type}.rb", __FILE__)].each { |file| require file }
 end

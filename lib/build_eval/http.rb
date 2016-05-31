@@ -1,7 +1,5 @@
 module BuildEval
-
   class Http
-
     def initialize(config)
       @username        = config[:username]
       @password        = config[:password]
@@ -20,11 +18,9 @@ module BuildEval
     private
 
     def ssl_options(uri)
-      ssl_options = { use_ssl: uri.scheme == "https" }
+      ssl_options = { use_ssl: uri.scheme == 'https' }
       ssl_options[:ssl_verify_mode] = @ssl_verify_mode if @ssl_verify_mode
       ssl_options
     end
-
   end
-
 end

@@ -1,97 +1,83 @@
 describe BuildEval::Server::Decorator do
-
-  let(:server) { double("BuildEval::Server::Server") }
+  let(:server) { double('BuildEval::Server::Server') }
 
   let(:decorator) { described_class.new(server) }
 
-  describe "#build_result" do
-
-    let(:build_name) { "some build name" }
+  describe '#build_result' do
+    let(:build_name) { 'some build name' }
 
     subject { decorator.build_result(build_name) }
 
-    it "delegates to the decorated server" do
+    it 'delegates to the decorated server' do
       expect(server).to receive(:build_result).with(build_name)
 
       subject
     end
 
-    context "when the decorated server returns a result" do
-
+    context 'when the decorated server returns a result' do
       let(:build_result) { instance_double(BuildEval::Result::BuildResult) }
 
       before(:example) { allow(server).to receive(:build_result).and_return(build_result) }
 
-      it "returns the result" do
+      it 'returns the result' do
         expect(subject).to eql(build_result)
       end
-
     end
 
-    context "when the decorated server raises an error" do
+    context 'when the decorated server raises an error' do
+      before(:example) { allow(server).to receive(:build_result).and_raise('Forced error') }
 
-      before(:example) { allow(server).to receive(:build_result).and_raise("Forced error") }
-
-      it "creates an indeterminate result" do
+      it 'creates an indeterminate result' do
         expect(BuildEval::Result::BuildResult).to receive(:indeterminate).with(build_name)
 
         subject
       end
 
-      it "returns the indeterminate result" do
+      it 'returns the indeterminate result' do
         indeterminate_result = instance_double(BuildEval::Result::BuildResult)
         allow(BuildEval::Result::BuildResult).to receive(:indeterminate).and_return(indeterminate_result)
 
         expect(subject).to eql(indeterminate_result)
       end
-
     end
-
   end
 
-  describe "#monitor" do
-
+  describe '#monitor' do
     let(:build_names) { (1..3).map { |i| "build##{i}" } }
 
     subject { decorator.monitor(*build_names) }
 
-    it "creates a server monitor for the decorated server" do
+    it 'creates a server monitor for the decorated server' do
       expect(BuildEval::Monitor::Server).to receive(:new).with(hash_including(server: server))
 
       subject
     end
 
-    it "returns the server monitor" do
+    it 'returns the server monitor' do
       monitor = instance_double(BuildEval::Monitor::Server)
       allow(BuildEval::Monitor::Server).to receive(:new).and_return(monitor)
 
       expect(subject).to eql(monitor)
     end
 
-    context "when an array of build names is provided" do
-
+    context 'when an array of build names is provided' do
       subject { decorator.monitor(build_names) }
 
-      it "creates a server monitor for the provided build names" do
+      it 'creates a server monitor for the provided build names' do
         expect(BuildEval::Monitor::Server).to receive(:new).with(hash_including(build_names: build_names))
 
         subject
       end
-
     end
 
-    context "when variable argument list of build names is provided" do
-
+    context 'when variable argument list of build names is provided' do
       subject { decorator.monitor(*build_names) }
 
-      it "creates a server monitor for the provided build names" do
+      it 'creates a server monitor for the provided build names' do
         expect(BuildEval::Monitor::Server).to receive(:new).with(hash_including(build_names: build_names))
 
         subject
       end
-
     end
-
   end
-
 end

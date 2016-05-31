@@ -1,8 +1,6 @@
 module BuildEval
   module Server
-
     class TravisCom
-
       def initialize(args)
         @username = args[:username]
         Travis::Pro.github_auth(args[:github_token])
@@ -20,8 +18,6 @@ module BuildEval
       def to_s
         "Travis CI Com #{@username}"
       end
-
     end
-
   end
 end

@@ -1,8 +1,6 @@
 module BuildEval
   module Server
-
     class TravisOrg
-
       def initialize(args)
         @username = args[:username]
       end
@@ -19,8 +17,6 @@ module BuildEval
       def to_s
         "Travis CI Org #{@username}"
       end
-
     end
-
   end
 end

@@ -3,6 +3,12 @@ require 'bundler/gem_tasks'
 Bundler.require(:default, :development)
 
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
+
+desc 'Run RuboCop on the lib directory'
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.patterns = ['lib/**/*.rb']
+end
 
 directory 'pkg'
 
@@ -11,11 +17,6 @@ task :clobber do
   %w( pkg tmp ).each { |dir| rm_rf dir }
   rm Dir.glob('**/coverage.data'), force: true
   puts 'Clobbered'
-end
-
-desc 'Complexity analysis'
-task :metrics do
-  print `rubocop --color`
 end
 
 desc 'Exercises unit specifications'
@@ -62,6 +63,6 @@ task :validate do
   raise 'Travis CI validation failed' unless $CHILD_STATUS.success?
 end
 
-task default: %w( clobber metrics coverage integration smoke )
+task default: %w( clobber rubocop coverage integration smoke )
 
-task pre_commit: %w( clobber metrics coverage:show validate )
+task pre_commit: %w( clobber rubocop coverage:show validate )

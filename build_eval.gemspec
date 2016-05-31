@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake",                      "~> 11.1"
   spec.add_development_dependency "travis-lint",               "~> 2.0"
+  spec.add_development_dependency "travis",                    "~> 1.8"
   spec.add_development_dependency "metric_fu",                 "~> 4.12"
   spec.add_development_dependency "rspec",                     "~> 3.4"
   spec.add_development_dependency "fakeweb",                   "~> 1.3"

@@ -15,7 +15,7 @@ end
 
 desc "Complexity analysis"
 task :metrics do
-  print `metric_fu --no-open`
+  print `rubocop --color`
 end
 
 desc "Exercises unit specifications"

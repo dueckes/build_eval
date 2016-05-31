@@ -7,7 +7,12 @@ describe BuildEval, "integrating with a real CI server", smoke: true do
   describe "the evaluated results from a build monitor for the server" do
 
     let(:tolerated_statuses) do
-      [ BuildEval::Result::Status::SUCCESS, BuildEval::Result::Status::UNKNOWN, BuildEval::Result::Status::FAILURE ]
+      [
+        BuildEval::Result::Status::SUCCESS,
+        BuildEval::Result::Status::UNKNOWN,
+        BuildEval::Result::Status::FAILURE,
+        BuildEval::Result::Status::ERROR
+      ]
     end
 
     subject { monitor.evaluate }

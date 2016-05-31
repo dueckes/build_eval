@@ -10,6 +10,9 @@ RuboCop::RakeTask.new(:rubocop) do |task|
   task.patterns = ['lib/**/*.rb']
 end
 
+desc 'Run metrics'
+task metrics: 'rubocop'
+
 directory 'pkg'
 
 desc 'Removed generated artefacts'
@@ -63,6 +66,6 @@ task :validate do
   raise 'Travis CI validation failed' unless $CHILD_STATUS.success?
 end
 
-task default: %w( clobber rubocop coverage integration smoke )
+task default: %w( clobber metrics coverage integration smoke )
 
-task pre_commit: %w( clobber rubocop coverage:show validate )
+task pre_commit: %w( clobber metrics coverage:show validate )

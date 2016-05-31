@@ -15,7 +15,7 @@ module BuildEval
       end
 
       def to_s
-        "#{@server}: #{@build_results.map(&:to_s).join(', ')}"
+        "#{@server}: #{@build_results.map(&:to_s).join(", ")}"
       end
     end
   end

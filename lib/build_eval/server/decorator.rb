@@ -7,7 +7,7 @@ module BuildEval
 
       def build_result(name)
         @delegate.build_result(name)
-      rescue Exception
+      rescue StandardError
         BuildEval::Result::BuildResult.indeterminate(name)
       end
 

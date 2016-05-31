@@ -1,8 +1,8 @@
 module BuildEval
   module Monitor
     class Base
-      def +(monitor)
-        BuildEval::Monitor::Composite.new(self, monitor)
+      def +(other)
+        BuildEval::Monitor::Composite.new(self, other)
       end
     end
   end

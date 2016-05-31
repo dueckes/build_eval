@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.platform          = Gem::Platform::RUBY
   spec.authors           = ['Matthew Ueckerman', 'Ryan Davis']
   spec.summary           = 'Evaluates the effective status of continuous integration builds'
-  spec.description       = 'Evaluates the effective status of continuous integration builds.  Useful for subsequent display on information radiators.'
+  spec.description       = 'Evaluates the effective status of continuous integration builds.'\
+    ' Useful for subsequent display on information radiators.'
   spec.email             = 'matthew.ueckerman@myob.com'
   spec.homepage          = 'http://github.com/MYOB-Technology/build_eval'
   spec.rubyforge_project = 'build_eval'

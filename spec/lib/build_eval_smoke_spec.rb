@@ -1,6 +1,6 @@
 describe BuildEval, "integrating with a real CI server", smoke: true do
 
-  let(:server) { BuildEval.server(type: :Travis, username: "MYOB-Technology") }
+  let(:server) { BuildEval.server(type: :TravisOrg, username: "MYOB-Technology") }
 
   let(:monitor) { server.monitor("build_eval") }
 

@@ -12,7 +12,7 @@ Because the status of continuous integration environment statuses should be easy
 
 ## Usage ##
 
-```BuildEval``` determines the status of builds.
+`BuildEval` determines the status of builds.
 
 Integrates with commonly used CI platforms to provide an effective status for builds of interest.
 
@@ -44,16 +44,30 @@ Currently supports:
   ).monitor("build_1", "build_2", "build_3")
 ```
 
-### Travis CI Integration ###
+### Travis CI (travis-ci.org) Integration ###
 
 ```ruby
   require 'build_eval'
 
   my_monitor = BuildEval.server(
-    type:     :Travis,
+    type:     :TravisOrg,
     username: "my_username"
   ).monitor("build_1", "build_2", "build_3")
 ```
+
+### Travis CI (travis-ci.com) Integration ###
+
+```ruby
+  require 'build_eval'
+
+  my_monitor = BuildEval.server(
+    type:         :TravisCom,
+    username:     "my_username",
+    github_token: "ABC123"
+  ).monitor("build_1", "build_2", "build_3")
+```
+
+GitHub token can be created in the GitHub web UI Settings page, under `Personal Access Tokens`.
 
 #### Reporting Results ####
 
@@ -72,7 +86,7 @@ This example uses the [blinky gem](https://github.com/perryn/blinky) to show the
     # Determine the overall status
     light.send(results.status.to_sym)
     # Describes the results of all builds
-    puts results.to_s 
+    puts results.to_s
   end
 ```
 

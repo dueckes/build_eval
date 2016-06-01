@@ -23,10 +23,10 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 1.9.3'
 
   spec.add_dependency 'nokogiri', '~> 1.6'
+  spec.add_dependency 'travis',   '~> 1.8'
 
   spec.add_development_dependency 'rake',                      '~> 11.1'
   spec.add_development_dependency 'travis-lint',               '~> 2.0'
-  spec.add_development_dependency 'travis',                    '~> 1.8'
   spec.add_development_dependency 'rubocop',                   '~> 0.40.0'
   spec.add_development_dependency 'rspec',                     '~> 3.4'
   spec.add_development_dependency 'fakeweb',                   '~> 1.3'

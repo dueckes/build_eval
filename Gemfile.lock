@@ -3,6 +3,7 @@ PATH
   specs:
     build_eval (0.0.5)
       nokogiri (~> 1.6)
+      travis (~> 1.8)
 
 GEM
   remote: http://rubygems.org/
@@ -100,7 +101,6 @@ DEPENDENCIES
   rspec (~> 3.4)
   rubocop (~> 0.40.0)
   simplecov (~> 0.11)
-  travis (~> 1.8)
   travis-lint (~> 2.0)
 
 BUNDLED WITH

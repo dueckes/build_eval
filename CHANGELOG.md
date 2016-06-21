@@ -1,18 +1,35 @@
-** 0.0.1 **
+** 0.0.6 **
 
-+ TeamCity with basic authentication support
+Breaking:
+* `:TravisOrg` and `:TravisCom` renamed to `:TravisPro` and `Travis` respectively
 
-** 0.0.2 **
+** 0.0.5 **
 
-+ TravisCI Open Source project support
-+ Error status support
-+ Composite monitors
+New:
+* `:TravisCom` support
 
-** 0.0.3 **
-
-Failure and Error status symbols mirror Blinky
+Breaking:
+* `:TravisCI` renamed to `:TravisOrg`
 
 ** 0.0.4 **
 
-+ Jenkins support
-+ ssl verify mode is configurable per server
+New:
+* Jenkins support
+* ssl verify mode is configurable per server
+
+** 0.0.3 **
+
+Breaking:
+* Failure and Error status symbols mirror Blinky
+
+** 0.0.2 **
+
+New:
+* `:TravisCI` open source project support
+* Error status support
+* Composite monitors
+
+** 0.0.1 **
+
+New:
+* TeamCity with basic authentication support

@@ -1,6 +1,8 @@
 module BuildEval
   module Result
+
     class Status
+
       private
 
       def initialize(args)
@@ -11,13 +13,14 @@ module BuildEval
 
       public
 
-      SUCCESS       = new(severity: 0, symbol: :success!, description: 'succeeded')
-      UNKNOWN       = new(severity: 1, symbol: :warning!, description: 'unknown')
-      INDETERMINATE = new(severity: 2, symbol: :warning!, description: 'indeterminate')
-      FAILURE       = new(severity: 3, symbol: :failure!, description: 'failed')
-      ERROR         = new(severity: 4, symbol: :failure!, description: 'errored')
+      SUCCESS       = new(severity: 0, symbol: :success!, description: "succeeded")
+      UNKNOWN       = new(severity: 1, symbol: :warning!, description: "unknown")
+      INDETERMINATE = new(severity: 2, symbol: :warning!, description: "indeterminate")
+      FAILURE       = new(severity: 3, symbol: :failure!, description: "failed")
+      ERROR         = new(severity: 4, symbol: :failure!, description: "errored")
 
       class << self
+
         def find(name)
           const_get(name.upcase)
         rescue NameError
@@ -27,6 +30,7 @@ module BuildEval
         def effective_status(statuses)
           statuses.sort_by(&:severity).last
         end
+
       end
 
       attr_reader :severity
@@ -42,6 +46,8 @@ module BuildEval
       def to_s
         @description
       end
+
     end
+
   end
 end

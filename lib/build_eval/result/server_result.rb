@@ -1,6 +1,8 @@
 module BuildEval
   module Result
+
     class ServerResult
+
       def initialize(server, build_results)
         @server        = server
         @build_results = build_results
@@ -17,6 +19,8 @@ module BuildEval
       def to_s
         "#{@server}: #{@build_results.map(&:to_s).join(", ")}"
       end
+
     end
+
   end
 end

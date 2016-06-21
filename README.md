@@ -18,8 +18,9 @@ Integrates with commonly used CI platforms to provide an effective status for bu
 
 Currently supports:
 
-* [TeamCity](https://www.jetbrains.com/teamcity/) via Basic Authentication
-* [Travis CI](https://travis-ci.org/) for Open Source projects
+* [TeamCity](https://www.jetbrains.com/teamcity/) via basic authentication
+* [Jenkins](https://jenkins.io/) with no authentication
+* [Travis CI](https://travis-ci.org/) and [Travis Pro](https://travis-ci.com/) with GitHub token authentication
 
 ### TeamCity Integration ###
 
@@ -50,24 +51,24 @@ Currently supports:
   require 'build_eval'
 
   my_monitor = BuildEval.server(
-    type:     :TravisOrg,
+    type:     :Travis,
     username: "my_username"
   ).monitor("build_1", "build_2", "build_3")
 ```
 
-### Travis CI (travis-ci.com) Integration ###
+### Travis CI Pro (travis-ci.com) Integration ###
 
 ```ruby
   require 'build_eval'
 
   my_monitor = BuildEval.server(
-    type:         :TravisCom,
+    type:         :TravisPro,
     username:     "my_username",
     github_token: "ABC123"
   ).monitor("build_1", "build_2", "build_3")
 ```
 
-GitHub token can be created in the GitHub web UI Settings page, under `Personal Access Tokens`.
+GitHub tokens can be created in the GitHub web UI Settings page, under `Personal Access Tokens`.
 
 #### Reporting Results ####
 

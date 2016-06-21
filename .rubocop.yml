@@ -60,9 +60,3 @@ Style/Documentation:
 # conditionals should contain statements
 Style/EmptyElse:
   EnforcedStyle: empty
-
-# rare situations where readability is preferred over metrics aspirations
-Metrics/AbcSize:
-  Exclude:
-    - lib/http_stub/server/stub/response/base.rb
-    - lib/http_stub/server/stub/stub.rb

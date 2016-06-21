@@ -1,6 +1,8 @@
 module BuildEval
   module Result
+
     class CompositeResult
+
       def initialize(results)
         @results = results
       end
@@ -16,6 +18,8 @@ module BuildEval
       def to_s
         @results.map(&:to_s).join("\n")
       end
+
     end
+
   end
 end

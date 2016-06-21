@@ -1,6 +1,8 @@
 module BuildEval
   module Server
+
     class Jenkins
+
       def initialize(args)
         @http     = BuildEval::Http.new(args)
         @base_uri = args[:uri]
@@ -14,6 +16,8 @@ module BuildEval
       def to_s
         "Jenkins server #{@base_uri}"
       end
+
     end
+
   end
 end

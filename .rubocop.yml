@@ -17,11 +17,6 @@ Style/MultilineMethodCallBraceLayout:
 Style/AlignHash:
   Enabled: false
 
-# tolerate names that are not predicates
-Style/PredicateName:
-  NameWhitelist:
-    - has_started!
-
 # aids readability
 Style/RedundantSelf:
   Enabled: false

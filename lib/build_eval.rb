@@ -23,7 +23,9 @@ require_relative 'build_eval/monitor/server'
 require_relative 'build_eval/monitor/composite'
 
 module BuildEval
+
   class << self
+
     def server(args)
       type_args = args.clone
       server_type = type_args.delete(:type)
@@ -37,5 +39,7 @@ module BuildEval
     rescue NameError
       raise "Server type '#{type}' is invalid"
     end
+
   end
+
 end

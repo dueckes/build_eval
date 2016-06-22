@@ -1,3 +1,8 @@
+** 0.0.7 **
+
+Fix:
+* `Travis` API use: Switched to `recent_builds.first` as `last_build` appears to yield false positives.
+
 ** 0.0.6 **
 
 Breaking:

@@ -10,7 +10,7 @@ module BuildEval
 
       def build_result(name)
         repo_string = "#{@username}/#{name}"
-        has_failed = ::Travis::Pro::Repository.find(repo_string).last_build.failed?
+        has_failed = ::Travis::Pro::Repository.find(repo_string).recent_builds.first.failed?
         BuildEval::Result::BuildResult.create(
           build_name:  repo_string,
           status_name: has_failed ? "Failure" : "Success"

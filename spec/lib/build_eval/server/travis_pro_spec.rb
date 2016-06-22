@@ -12,20 +12,6 @@ describe BuildEval::Server::TravisPro do
 
   let(:travis_pro_server) { described_class.new(constructor_args) }
 
-  before(:example) { allow(::Travis::Pro).to receive(:github_auth) }
-
-  describe "#initialize" do
-
-    subject { described_class.new(constructor_args) }
-
-    it "establishes the GitHub auth token" do
-      expect(::Travis::Pro).to receive(:github_auth).with(github_token)
-
-      subject
-    end
-
-  end
-
   describe "#build_result" do
 
     let(:build_name)             { "some_build_name" }
@@ -38,31 +24,38 @@ describe BuildEval::Server::TravisPro do
     subject { travis_pro_server.build_result(build_name) }
 
     before(:example) do
+      allow(::Travis::Pro).to receive(:github_auth)
       allow(::Travis::Pro::Repository).to receive(:find).and_return(travis_repository)
       allow(travis_repository).to receive(:recent_builds).and_return(recent_builds)
       allow(last_build).to receive(:failed?).and_return(last_build_failed_flag)
       allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
     end
 
-    it "retrieves the relevant Travis repository" do
+    it "logs-in to Travis Pro using the provided GitHub token" do
+      expect(::Travis::Pro).to receive(:github_auth).with(github_token)
+
+      subject
+    end
+
+    it "retrieves the relevant Travis Pro Repository" do
       expect(::Travis::Pro::Repository).to receive(:find).with("#{username}/#{build_name}")
 
       subject
     end
 
-    it "retrieves the recent builds from Travis" do
+    it "retrieves the recent builds from the Travis Repository" do
       expect(travis_repository).to receive(:recent_builds)
 
       subject
     end
 
-    it "retrieves the build status from the last build" do
+    it "determines if the last build has failed" do
       expect(last_build).to receive(:failed?)
 
       subject
     end
 
-    it "creates a build result whose build name is the path to the repository" do
+    it "creates a build result whose build name is the path to the GitHub repository" do
       expect(BuildEval::Result::BuildResult).to(
         receive(:create).with(hash_including(build_name: "#{username}/#{build_name}"))
       )
@@ -70,7 +63,7 @@ describe BuildEval::Server::TravisPro do
       subject
     end
 
-    context "when the last build has passed" do
+    context "when the last build had passed" do
 
       let(:last_build_failed_flag) { false }
 
@@ -82,7 +75,7 @@ describe BuildEval::Server::TravisPro do
 
     end
 
-    context "when the last build has failed" do
+    context "when the last build had failed" do
 
       let(:last_build_failed_flag) { true }
 
@@ -94,7 +87,7 @@ describe BuildEval::Server::TravisPro do
 
     end
 
-    it "returns the parsed build result" do
+    it "returns the build result" do
       expect(subject).to eql(build_result)
     end
 

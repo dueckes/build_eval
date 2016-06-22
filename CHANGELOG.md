@@ -1,3 +1,8 @@
+** 0.0.8 **
+
+Fix:
+* Addressed `TravisPro` race condition by logging-in immediately before evaluating build status
+
 ** 0.0.7 **
 
 Fix:

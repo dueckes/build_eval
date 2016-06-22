@@ -30,13 +30,13 @@ describe BuildEval::Server::Travis do
       subject
     end
 
-    it "retrieves the recent builds from Travis" do
+    it "retrieves the recent builds from the Travis repository" do
       expect(travis_repository).to receive(:recent_builds)
 
       subject
     end
 
-    it "retrieves the status of the last build" do
+    it "determines if the last build has failed" do
       expect(last_build).to receive(:failed?)
 
       subject
@@ -74,7 +74,7 @@ describe BuildEval::Server::Travis do
 
     end
 
-    it "returns the parsed build result" do
+    it "returns the build result" do
       expect(subject).to eql(build_result)
     end
 

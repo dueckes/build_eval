@@ -4,16 +4,15 @@ module BuildEval
     class TravisPro
 
       def initialize(args)
-        @username = args[:username]
-        ::Travis::Pro.github_auth(args[:github_token])
+        @username     = args[:username]
+        @github_token = args[:github_token]
       end
 
       def build_result(name)
-        repo_string = "#{@username}/#{name}"
-        has_failed = ::Travis::Pro::Repository.find(repo_string).recent_builds.first.failed?
+        repository_path = "#{@username}/#{name}"
         BuildEval::Result::BuildResult.create(
-          build_name:  repo_string,
-          status_name: has_failed ? "Failure" : "Success"
+          build_name:  repository_path,
+          status_name: last_build_failed?(repository_path) ? "Failure" : "Success"
         )
       end
 
@@ -21,7 +20,14 @@ module BuildEval
         "Travis CI Pro #{@username}"
       end
 
-    end
-  end
+      private
 
+      def last_build_failed?(repository_path)
+        ::Travis::Pro.github_auth(@github_token)
+        ::Travis::Pro::Repository.find(repository_path).recent_builds.first.failed?
+      end
+
+    end
+
+  end
 end

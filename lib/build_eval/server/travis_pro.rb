@@ -9,11 +9,8 @@ module BuildEval
       end
 
       def build_result(name)
-        repository_path = "#{@username}/#{name}"
-        BuildEval::Result::BuildResult.create(
-          build_name:  repository_path,
-          status_name: last_build_failed?(repository_path) ? "Failure" : "Success"
-        )
+        build_path = "#{@username}/#{name}"
+        BuildEval::Result::BuildResult.create(build_name: build_path, status_name: last_status_name(build_path))
       end
 
       def to_s
@@ -22,9 +19,9 @@ module BuildEval
 
       private
 
-      def last_build_failed?(repository_path)
+      def last_status_name(build_path)
         ::Travis::Pro.github_auth(@github_token)
-        ::Travis::Pro::Repository.find(repository_path).recent_builds.first.failed?
+        ::Travis::Pro::Repository.find(build_path).recent_builds.find(&:finished?).passed? ? "Success" : "Failure"
       end
 
     end

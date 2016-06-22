@@ -8,19 +8,21 @@ describe BuildEval::Server::Travis do
 
   describe "#build_result" do
 
-    let(:build_name)             { "some_build_name" }
-    let(:travis_repository)      { instance_double(::Travis::Client::Repository) }
-    let(:recent_builds)          { (1..3).map { instance_double(::Travis::Client::Build) } }
-    let(:last_build)             { recent_builds.first }
-    let(:last_build_failed_flag) { false }
-    let(:build_result)           { instance_double(BuildEval::Result::BuildResult) }
+    let(:build_name)                      { "some_build_name" }
+    let(:travis_repository)               { instance_double(::Travis::Client::Repository) }
+    let(:recent_builds)                   do
+      (1..3).map { |i| instance_double(::Travis::Client::Build, finished?: i > 1) }
+    end
+    let(:last_finished_build)             { recent_builds[1] }
+    let(:last_finished_build_passed_flag) { true }
+    let(:build_result)                    { instance_double(BuildEval::Result::BuildResult) }
 
     subject { travis_server.build_result(build_name) }
 
     before(:example) do
       allow(::Travis::Repository).to receive(:find).and_return(travis_repository)
       allow(travis_repository).to receive(:recent_builds).and_return(recent_builds)
-      allow(last_build).to receive(:failed?).and_return(last_build_failed_flag)
+      allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
       allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
     end
 
@@ -36,8 +38,8 @@ describe BuildEval::Server::Travis do
       subject
     end
 
-    it "determines if the last build has failed" do
-      expect(last_build).to receive(:failed?)
+    it "determines if the last finished build has passed" do
+      expect(last_finished_build).to receive(:passed?)
 
       subject
     end
@@ -50,9 +52,9 @@ describe BuildEval::Server::Travis do
       subject
     end
 
-    context "when the last build has passed" do
+    context "when the last finished build passed" do
 
-      let(:last_build_failed_flag) { false }
+      let(:last_finished_build_passed_flag) { true }
 
       it "creates a successful build result" do
         expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: "Success"))
@@ -62,9 +64,9 @@ describe BuildEval::Server::Travis do
 
     end
 
-    context "when the last build has failed" do
+    context "when the last finished build failed" do
 
-      let(:last_build_failed_flag) { true }
+      let(:last_finished_build_passed_flag) { false }
 
       it "creates a failed build result" do
         expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: "Failure"))

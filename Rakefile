@@ -5,6 +5,8 @@ Bundler.require(:default, :development)
 require 'rubocop/rake_task'
 require 'rspec/core/rake_task'
 
+require_relative 'examples/travis'
+
 desc "Source code metrics analysis"
 RuboCop::RakeTask.new(:metrics) { |task| task.fail_on_error = true }
 
@@ -51,6 +53,15 @@ namespace :coverage do
       `open tmp/coverage/index.html`
     end
   end
+end
+
+namespace :example do
+
+  desc "Evaulates Travis Builds"
+  task :travis do
+    BuildEval::Examples::Travis.eval_builds
+  end
+
 end
 
 task :validate do

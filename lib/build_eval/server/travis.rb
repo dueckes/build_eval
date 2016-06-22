@@ -8,16 +8,18 @@ module BuildEval
       end
 
       def build_result(name)
-        repo_string = "#{@username}/#{name}"
-        has_failed = ::Travis::Repository.find(repo_string).recent_builds.first.failed?
-        BuildEval::Result::BuildResult.create(
-          build_name:  repo_string,
-          status_name: has_failed ? "Failure" : "Success"
-        )
+        build_path = "#{@username}/#{name}"
+        BuildEval::Result::BuildResult.create(build_name: build_path, status_name: last_status_name(build_path))
       end
 
       def to_s
         "Travis CI #{@username}"
+      end
+
+      private
+
+      def last_status_name(build_path)
+        ::Travis::Repository.find(build_path).recent_builds.find(&:finished?).passed? ? "Success" : "Failure"
       end
 
     end

@@ -1,3 +1,8 @@
+** 0.0.9 **
+
+Fix:
+* `Travis` and `TravisPro` build status is that of last finished build
+
 ** 0.0.8 **
 
 Fix:

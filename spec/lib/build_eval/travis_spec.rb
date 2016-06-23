@@ -1,27 +1,10 @@
 describe BuildEval::Travis do
   include_context "stubbed Travis API interactions"
 
-  let(:travis_module) { ::Travis }
+  describe "::last_build_status" do
 
-  let(:travis) { described_class.new(travis_module) }
-
-  describe "#login" do
-
-    let(:github_token) { "SOMEGITHUBTOKEN" }
-
-    subject { travis.login(github_token) }
-
-    it "logs-in to Travis using the GitHub Auth token provided" do
-      expect(travis_module).to receive(:github_auth).with(github_token)
-
-      subject
-    end
-
-  end
-
-  describe "#last_build_status_for" do
-
-    let(:build_path) { "some/build_path" }
+    let(:build_path)    { "some/build_path" }
+    let(:optional_args) { {} }
 
     let(:recent_builds)                   do
       (1..3).map { |i| instance_double(::Travis::Client::Build, finished?: i > 1) }
@@ -32,20 +15,63 @@ describe BuildEval::Travis do
       instance_double(::Travis::Client::Repository, recent_builds: recent_builds)
     end
 
-    subject { travis.last_build_status_for(build_path) }
+    subject { described_class.last_build_status({ build_path: build_path }.merge(optional_args)) }
 
     before(:example) do
-      allow(travis_module::Repository).to receive(:find).and_return(travis_repository)
+      allow(::Travis::Repository).to receive(:find).and_return(travis_repository)
       allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
     end
 
-    it "retrieves the Travis Repository for the provided build path" do
-      expect(travis_module::Repository).to receive(:find).with(build_path)
+    context "when a GitHub token is provided" do
+
+      let(:github_token)  { "SOMEGITHUBAUTHTOKEN" }
+      let(:optional_args) { { github_token: github_token } }
+
+      it "logs-in to the Travis Pro API with the provided GitHub token" do
+        expect(::Travis::Pro).to receive(:github_auth).with(github_token)
+
+        subject
+      end
+
+      it "uses the Travis Pro modules Repository" do
+        expect(::Travis::Pro::Repository).to receive(:find)
+
+        subject
+      end
+
+      context "when a Travis Client error occurs on log-in" do
+
+        before(:example) do
+          allow(::Travis::Pro).to receive(:github_auth).and_raise(::Travis::Client::Error.new("Forced error"))
+        end
+
+        it "returns 'Unknown'" do
+          expect(subject).to eql("Unknown")
+        end
+
+      end
+
+    end
+
+    context "when no GitHub token is provided" do
+
+      let(:optional_args) { {} }
+
+      it "uses the Travis modules Repository" do
+        expect(::Travis::Repository).to receive(:find)
+
+        subject
+      end
+
+    end
+
+    it "retrieves the repository for the provided build path" do
+      expect(::Travis::Repository).to receive(:find).with(build_path)
 
       subject
     end
 
-    it "retrieves the recent builds from the Travis Repository" do
+    it "retrieves the recent builds from the repository" do
       expect(travis_repository).to receive(:recent_builds)
 
       subject

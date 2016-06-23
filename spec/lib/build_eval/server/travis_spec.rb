@@ -10,29 +10,24 @@ describe BuildEval::Server::Travis do
 
     let(:build_name)        { "some_build_name" }
     let(:last_build_status) { "Failure" }
-    let(:travis)            { instance_double(BuildEval::Travis, last_build_status_for: last_build_status) }
     let(:build_result)      { instance_double(BuildEval::Result::BuildResult) }
 
     subject { travis_server.build_result(build_name) }
 
     before(:example) do
-      allow(BuildEval::Travis).to receive(:new).and_return(travis)
+      allow(BuildEval::Travis).to receive(:last_build_status).and_return(last_build_status)
       allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
     end
 
-    it "creates a Travis API wrapping the Standard module" do
-      expect(BuildEval::Travis).to receive(:new).with(::Travis)
+    it "retrieves the last build status from Travis for the users build" do
+      expect(BuildEval::Travis).to(
+        receive(:last_build_status).with(hash_including(build_path: "#{username}/#{build_name}"))
+      )
 
       subject
     end
 
-    it "retrieves the last build status for the GitHub repository" do
-      expect(travis).to receive(:last_build_status_for).with("#{username}/#{build_name}")
-
-      subject
-    end
-
-    it "creates a build result whose build name is the path to the GitHub repository" do
+    it "creates a build result whose build name is the path to users build" do
       expect(BuildEval::Result::BuildResult).to(
         receive(:create).with(hash_including(build_name: "#{username}/#{build_name}"))
       )

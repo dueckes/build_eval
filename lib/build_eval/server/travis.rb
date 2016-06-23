@@ -5,14 +5,13 @@ module BuildEval
 
       def initialize(args)
         @username = args[:username]
-        @travis   = BuildEval::Travis.new(::Travis)
       end
 
       def build_result(name)
         build_path = "#{@username}/#{name}"
         BuildEval::Result::BuildResult.create(
           build_name:  build_path,
-          status_name: @travis.last_build_status_for(build_path)
+          status_name: BuildEval::Travis.last_build_status(build_path: build_path)
         )
       end
 

@@ -1,7 +1,50 @@
 shared_context "stubbed Travis API interactions" do
 
-  let(:travis_namespace) { instance_double(::Travis::Client::Namespace) }
+  module StubTravisBuild
 
-  before(:each) { allow(::Travis::Client::Namespace).to receive(:new).and_return(travis_namespace) }
+    def finished?
+      # Intentionally blank
+    end
+
+    def passed?
+      # Intentionally blank
+    end
+
+  end
+
+    module StubTravisRepository
+
+    def recent_builds
+      # Intentionally blank
+    end
+
+  end
+
+  module StubTravisPro
+
+    Repository = StubTravisRepository
+
+    def self.github_auth(auth_token)
+      # Intentionally blank
+    end
+
+  end
+
+  module StubTravis
+
+    Repository = StubTravisRepository
+    Pro = StubTravisPro
+
+    module Client
+      Repository = StubTravisRepository
+      Build = StubTravisBuild
+      Error = ::StandardError
+    end
+
+  end
+
+  before(:context) do
+    ::Travis = StubTravis
+  end
 
 end

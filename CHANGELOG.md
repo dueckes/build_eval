@@ -1,3 +1,8 @@
+** 0.0.11 **
+
+New:
+* `TravisPro` build status is unknown when login attempt fails
+
 ** 0.0.10 **
 
 New:

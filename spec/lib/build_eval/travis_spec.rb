@@ -18,68 +18,37 @@ describe BuildEval::Travis do
     subject { described_class.last_build_status({ repository_path: repository_path }.merge(optional_args)) }
 
     before(:example) do
-      allow(::Travis::Client::Session).to receive(:new).and_return(travis_session)
+      allow(BuildEval::Travis::SessionFactory).to receive(:create).and_return(travis_session)
       allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
     end
 
-    context "when a GitHub token is provided" do
+    context "when a Github authentication token is provided" do
 
       let(:github_token)  { "SOMEGITHUBAUTHTOKEN" }
       let(:optional_args) { { github_token: github_token } }
 
-      before(:example) { allow(travis_session).to receive(:github_auth) }
-
-      it "creates a Travis session connecting to the Travis Pro site" do
-        expect(::Travis::Client::Session).to receive(:new).with(hash_including(uri: ::Travis::Client::PRO_URI))
+      it "creates a Travis session using the token" do
+        expect(BuildEval::Travis::SessionFactory).to receive(:create).with(github_token)
 
         subject
-      end
-
-      it "logs-in using the provided GitHub token via the session" do
-        expect(travis_session).to receive(:github_auth).with(github_token)
-
-        subject
-      end
-
-      context "when an error occurs on log-in" do
-
-        before(:example) do
-          allow(travis_session).to receive(:github_auth).and_raise(::Travis::Client::Error.new("Forced error"))
-        end
-
-        it "returns 'Unknown'" do
-          expect(subject).to eql("Unknown")
-        end
-
       end
 
     end
 
-    context "when no GitHub token is provided" do
+    context "when a Github authentication token is not provided" do
 
       let(:optional_args) { {} }
 
-      it "creates a Travis session connecting to the Travis Org site" do
-        expect(::Travis::Client::Session).to receive(:new).with(hash_including(uri: ::Travis::Client::ORG_URI))
-
-        subject
-      end
-
-      it "does not log-in" do
-        expect(travis_session).to_not receive(:github_auth)
+      it "creates a Travis session for a nil token" do
+        expect(BuildEval::Travis::SessionFactory).to receive(:create).with(nil)
 
         subject
       end
 
     end
 
-    it "creates a Travis session with empty SSL settings to avoid using local security certificates" do
-      expect(::Travis::Client::Session).to receive(:new).with(hash_including(ssl: {}))
 
-      subject
-    end
-
-    it "retrieves the Travis repository for the provided repository path" do
+    it "retrieves the Travis repository for the provided repository path from the session" do
       expect(travis_session).to receive(:repo).with(repository_path)
 
       subject
@@ -117,7 +86,21 @@ describe BuildEval::Travis do
 
     end
 
-    context "when an Travis Client error occurs" do
+    context "when an error occurs obtaining a session" do
+
+      before(:example) do
+        allow(BuildEval::Travis::SessionFactory).to(
+          receive(:create).and_raise(::Travis::Client::Error.new("Forced error"))
+        )
+      end
+
+      it "returns 'Unknown'" do
+        expect(subject).to eql("Unknown")
+      end
+
+    end
+
+    context "when an error occurs retrieving the recent builds" do
 
       before(:example) do
         allow(travis_repository).to receive(:recent_builds).and_raise(::Travis::Client::Error.new("Forced error"))

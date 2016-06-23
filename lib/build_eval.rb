@@ -6,6 +6,7 @@ require 'travis/client/session'
 
 require_relative 'build_eval/error'
 require_relative 'build_eval/http'
+require_relative 'build_eval/travis/session_factory'
 require_relative 'build_eval/travis'
 require_relative 'build_eval/result/status'
 require_relative 'build_eval/result/build_result'

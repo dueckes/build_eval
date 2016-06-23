@@ -1,4 +1,9 @@
-** 0.0.11 **
+** 0.0.13 **
+
+New:
+* `Travis` and `TravisPro` sessions are cached to reduce Travis API calls
+
+** 0.0.12 **
 
 New:
 * `Travis` and `TravisPro` statuses retrieved via sessions

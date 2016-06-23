@@ -58,18 +58,18 @@ end
 
 namespace :example do
 
-  desc "Evaulates Travis Builds"
-  task :travis do
-    loop { BuildEval::Examples::Travis.display_statuses }
-  end
-
-  desc "Evaulates Travis Pro Builds"
-  task :travis_pro do
+  def monitor_indefinitely(example)
     loop do
-      BuildEval::Examples::TravisPro.display_statuses
-      sleep 60
+      example.display_statuses
+      sleep 10
     end
   end
+
+  desc "Evaulates Travis Builds"
+  task(:travis) { monitor_indefinitely(BuildEval::Examples::Travis) }
+
+  desc "Evaulates Travis Pro Builds"
+  task(:travis_pro) { monitor_indefinitely(BuildEval::Examples::TravisPro) }
 
 end
 

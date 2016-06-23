@@ -59,7 +59,7 @@ namespace :example do
 
   desc "Evaulates Travis Builds"
   task :travis do
-    BuildEval::Examples::Travis.eval_builds
+    BuildEval::Examples::Travis.display_statuses
   end
 
 end

@@ -7,6 +7,7 @@ require 'travis/tools/github'
 
 require_relative 'build_eval/error'
 require_relative 'build_eval/http'
+require_relative 'build_eval/travis'
 require_relative 'build_eval/result/status'
 require_relative 'build_eval/result/build_result'
 require_relative 'build_eval/result/server_result'

@@ -1,5 +1,5 @@
 describe BuildEval::Server::TravisPro do
-  include_context "stubbed http interactions"
+  include_context "stubbed Travis API interactions"
 
   let(:username)     { "some_username" }
   let(:github_token) { "ABCD1234" }
@@ -14,45 +14,32 @@ describe BuildEval::Server::TravisPro do
 
   describe "#build_result" do
 
-    let(:build_name)                      { "some_build_name" }
-    let(:travis_repository)               { instance_double(::Travis::Client::Repository) }
-    let(:recent_builds)                   do
-      (1..3).map { |i| instance_double(::Travis::Client::Build, finished?: i > 1) }
-    end
-    let(:last_finished_build)             { recent_builds[1] }
-    let(:last_finished_build_passed_flag) { true }
-    let(:build_result)                    { instance_double(BuildEval::Result::BuildResult) }
+    let(:build_name)        { "some_build_name" }
+    let(:last_build_status) { "Unknown" }
+    let(:travis)            { instance_double(BuildEval::Travis, login: nil, last_build_status_for: last_build_status) }
+    let(:build_result)      { instance_double(BuildEval::Result::BuildResult) }
 
     subject { travis_pro_server.build_result(build_name) }
 
     before(:example) do
-      allow(::Travis::Pro).to receive(:github_auth)
-      allow(::Travis::Pro::Repository).to receive(:find).and_return(travis_repository)
-      allow(travis_repository).to receive(:recent_builds).and_return(recent_builds)
-      allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
+      allow(BuildEval::Travis).to receive(:new).and_return(travis)
       allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
     end
 
-    it "logs-in to Travis Pro using the provided GitHub token" do
-      expect(::Travis::Pro).to receive(:github_auth).with(github_token)
+    it "creates a Travis API wrapping the Pro module" do
+      expect(BuildEval::Travis).to receive(:new).with(::Travis::Pro)
 
       subject
     end
 
-    it "retrieves the relevant Travis Pro Repository" do
-      expect(::Travis::Pro::Repository).to receive(:find).with("#{username}/#{build_name}")
+    it "logs-in to the Travis API using the provided GitHub token" do
+      expect(travis).to receive(:login).with(github_token)
 
       subject
     end
 
-    it "retrieves the recent builds from the Travis Repository" do
-      expect(travis_repository).to receive(:recent_builds)
-
-      subject
-    end
-
-    it "determines if the last finished build has passed" do
-      expect(last_finished_build).to receive(:passed?)
+    it "retrieves the last build status for the GitHub repository" do
+      expect(travis).to receive(:last_build_status_for).with("#{username}/#{build_name}")
 
       subject
     end
@@ -65,28 +52,12 @@ describe BuildEval::Server::TravisPro do
       subject
     end
 
-    context "when the last finished build passed" do
+    it "creates a build result whose status is the status the last build status" do
+      expect(BuildEval::Result::BuildResult).to(
+        receive(:create).with(hash_including(status_name: last_build_status))
+      )
 
-      let(:last_finished_build_passed_flag) { true }
-
-      it "creates a successful build result" do
-        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: "Success"))
-
-        subject
-      end
-
-    end
-
-    context "when the last finished build failed" do
-
-      let(:last_finished_build_passed_flag) { false }
-
-      it "creates a failed build result" do
-        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: "Failure"))
-
-        subject
-      end
-
+      subject
     end
 
     it "returns the build result" do

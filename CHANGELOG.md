@@ -1,3 +1,8 @@
+** 0.0.10 **
+
+New:
+* `Travis` and `TravisPro` build status is unknown when Travis SDK call fails
+
 ** 0.0.9 **
 
 Fix:

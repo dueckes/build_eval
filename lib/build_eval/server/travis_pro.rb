@@ -6,6 +6,7 @@ module BuildEval
       def initialize(args)
         @username     = args[:username]
         @github_token = args[:github_token]
+        @travis       = BuildEval::Travis.new(::Travis::Pro)
       end
 
       def build_result(name)
@@ -20,8 +21,8 @@ module BuildEval
       private
 
       def last_status_name(build_path)
-        ::Travis::Pro.github_auth(@github_token)
-        ::Travis::Pro::Repository.find(build_path).recent_builds.find(&:finished?).passed? ? "Success" : "Failure"
+        @travis.login(@github_token)
+        @travis.last_build_status_for(build_path)
       end
 
     end

@@ -1,16 +1,10 @@
 describe BuildEval::Server::TravisPro do
-  include_context "stubbed Travis API interactions"
 
   let(:username)     { "some_username" }
   let(:github_token) { "ABCD1234" }
-  let(:constructor_args) do
-    {
-      username:     username,
-      github_token: github_token
-    }
-  end
+  let(:args)         { { username: username, github_token: github_token } }
 
-  let(:travis_pro_server) { described_class.new(constructor_args) }
+  let(:travis_pro_server) { described_class.new(args) }
 
   describe "#build_result" do
 
@@ -35,7 +29,7 @@ describe BuildEval::Server::TravisPro do
 
     it "retrieves the last build status from Travis for the users build" do
       expect(BuildEval::Travis).to(
-        receive(:last_build_status).with(hash_including(build_path: "#{username}/#{build_name}"))
+        receive(:last_build_status).with(hash_including(repository_path: "#{username}/#{build_name}"))
       )
 
       subject

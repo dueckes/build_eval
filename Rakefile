@@ -6,6 +6,7 @@ require 'rubocop/rake_task'
 require 'rspec/core/rake_task'
 
 require_relative 'examples/travis'
+require_relative 'examples/travis_pro'
 
 desc "Source code metrics analysis"
 RuboCop::RakeTask.new(:metrics) { |task| task.fail_on_error = true }
@@ -59,7 +60,15 @@ namespace :example do
 
   desc "Evaulates Travis Builds"
   task :travis do
-    BuildEval::Examples::Travis.display_statuses
+    loop { BuildEval::Examples::Travis.display_statuses }
+  end
+
+  desc "Evaulates Travis Pro Builds"
+  task :travis_pro do
+    loop do
+      BuildEval::Examples::TravisPro.display_statuses
+      sleep 60
+    end
   end
 
 end

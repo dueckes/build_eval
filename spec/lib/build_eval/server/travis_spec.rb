@@ -1,5 +1,4 @@
 describe BuildEval::Server::Travis do
-  include_context "stubbed Travis API interactions"
 
   let(:username)         { "some_username" }
   let(:constructor_args) { { username: username } }
@@ -21,7 +20,7 @@ describe BuildEval::Server::Travis do
 
     it "retrieves the last build status from Travis for the users build" do
       expect(BuildEval::Travis).to(
-        receive(:last_build_status).with(hash_including(build_path: "#{username}/#{build_name}"))
+        receive(:last_build_status).with(hash_including(repository_path: "#{username}/#{build_name}"))
       )
 
       subject

@@ -8,10 +8,10 @@ module BuildEval
       end
 
       def build_result(name)
-        build_path = "#{@username}/#{name}"
+        repository_path = "#{@username}/#{name}"
         BuildEval::Result::BuildResult.create(
-          build_name:  build_path,
-          status_name: BuildEval::Travis.last_build_status(build_path: build_path)
+          build_name:  repository_path,
+          status_name: BuildEval::Travis.last_build_status(repository_path: repository_path)
         )
       end
 

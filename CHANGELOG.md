@@ -1,6 +1,11 @@
 ** 0.0.11 **
 
 New:
+* `Travis` and `TravisPro` statuses retrieved via sessions
+
+** 0.0.11 **
+
+New:
 * `TravisPro` build status is unknown when login attempt fails
 
 ** 0.0.10 **

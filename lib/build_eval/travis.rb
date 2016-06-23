@@ -5,7 +5,7 @@ module BuildEval
     class << self
 
       def last_build_status(args)
-        repository = travis_module_for(args)::Repository.find(args[:build_path])
+        repository = create_session(args).repo(args[:repository_path])
         repository.recent_builds.find(&:finished?).passed? ? "Success" : "Failure"
       rescue ::Travis::Client::Error
         "Unknown"
@@ -13,13 +13,11 @@ module BuildEval
 
       private
 
-      def travis_module_for(args)
-        travis_module = ::Travis
-        if args[:github_token]
-          travis_module = ::Travis::Pro
-          travis_module.github_auth(args[:github_token])
+      def create_session(args)
+        travis_uri = args[:github_token] ? ::Travis::Client::PRO_URI : ::Travis::Client::ORG_URI
+        ::Travis::Client::Session.new(uri: travis_uri, ssl: {}).tap do |session|
+          session.github_auth(args[:github_token]) if args[:github_token]
         end
-        travis_module
       end
 
     end

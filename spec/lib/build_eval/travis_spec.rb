@@ -1,10 +1,9 @@
 describe BuildEval::Travis do
-  include_context "stubbed Travis API interactions"
 
   describe "::last_build_status" do
 
-    let(:build_path)    { "some/build_path" }
-    let(:optional_args) { {} }
+    let(:repository_path) { "some/repository_path" }
+    let(:optional_args)   { {} }
 
     let(:recent_builds)                   do
       (1..3).map { |i| instance_double(::Travis::Client::Build, finished?: i > 1) }
@@ -14,11 +13,12 @@ describe BuildEval::Travis do
     let(:travis_repository)               do
       instance_double(::Travis::Client::Repository, recent_builds: recent_builds)
     end
+    let(:travis_session)                  { instance_double(::Travis::Client::Session, repo: travis_repository) }
 
-    subject { described_class.last_build_status({ build_path: build_path }.merge(optional_args)) }
+    subject { described_class.last_build_status({ repository_path: repository_path }.merge(optional_args)) }
 
     before(:example) do
-      allow(::Travis::Repository).to receive(:find).and_return(travis_repository)
+      allow(::Travis::Client::Session).to receive(:new).and_return(travis_session)
       allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
     end
 
@@ -27,22 +27,24 @@ describe BuildEval::Travis do
       let(:github_token)  { "SOMEGITHUBAUTHTOKEN" }
       let(:optional_args) { { github_token: github_token } }
 
-      it "logs-in to the Travis Pro API with the provided GitHub token" do
-        expect(::Travis::Pro).to receive(:github_auth).with(github_token)
+      before(:example) { allow(travis_session).to receive(:github_auth) }
+
+      it "creates a Travis session connecting to the Travis Pro site" do
+        expect(::Travis::Client::Session).to receive(:new).with(hash_including(uri: ::Travis::Client::PRO_URI))
 
         subject
       end
 
-      it "uses the Travis Pro modules Repository" do
-        expect(::Travis::Pro::Repository).to receive(:find)
+      it "logs-in using the provided GitHub token via the session" do
+        expect(travis_session).to receive(:github_auth).with(github_token)
 
         subject
       end
 
-      context "when a Travis Client error occurs on log-in" do
+      context "when an error occurs on log-in" do
 
         before(:example) do
-          allow(::Travis::Pro).to receive(:github_auth).and_raise(::Travis::Client::Error.new("Forced error"))
+          allow(travis_session).to receive(:github_auth).and_raise(::Travis::Client::Error.new("Forced error"))
         end
 
         it "returns 'Unknown'" do
@@ -57,16 +59,28 @@ describe BuildEval::Travis do
 
       let(:optional_args) { {} }
 
-      it "uses the Travis modules Repository" do
-        expect(::Travis::Repository).to receive(:find)
+      it "creates a Travis session connecting to the Travis Org site" do
+        expect(::Travis::Client::Session).to receive(:new).with(hash_including(uri: ::Travis::Client::ORG_URI))
+
+        subject
+      end
+
+      it "does not log-in" do
+        expect(travis_session).to_not receive(:github_auth)
 
         subject
       end
 
     end
 
-    it "retrieves the repository for the provided build path" do
-      expect(::Travis::Repository).to receive(:find).with(build_path)
+    it "creates a Travis session with empty SSL settings to avoid using local security certificates" do
+      expect(::Travis::Client::Session).to receive(:new).with(hash_including(ssl: {}))
+
+      subject
+    end
+
+    it "retrieves the Travis repository for the provided repository path" do
+      expect(travis_session).to receive(:repo).with(repository_path)
 
       subject
     end

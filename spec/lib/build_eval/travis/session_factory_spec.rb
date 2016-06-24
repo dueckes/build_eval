@@ -5,7 +5,7 @@ describe BuildEval::Travis::SessionFactory do
     let(:github_token)   { nil }
     let(:travis_session) { instance_double(::Travis::Client::Session) }
 
-    subject { described_class.create(github_token) }
+    subject { create_session }
 
     before(:example) { allow(::Travis::Client::Session).to receive(:new).and_return(travis_session) }
     after(:example)  { described_class.clear_cache }
@@ -72,10 +72,20 @@ describe BuildEval::Travis::SessionFactory do
 
     context "when a session for the GitHub token has been retrieved previously" do
 
-      before(:example) { subject }
+      before(:example) do
+        create_session
+
+        allow(travis_session).to receive(:clear_cache)
+      end
 
       it "does not create a new session" do
         expect(::Travis::Client::Session).to_not receive(:new)
+
+        subject
+      end
+
+      it "clears the cache of the previously retrieved session to ensure no stale data is returned" do
+        expect(travis_session).to receive(:clear_cache)
 
         subject
       end
@@ -84,6 +94,10 @@ describe BuildEval::Travis::SessionFactory do
         expect(subject).to eql(travis_session)
       end
 
+    end
+
+    def create_session
+      described_class.create(github_token)
     end
 
   end

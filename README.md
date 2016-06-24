@@ -70,9 +70,6 @@ Currently supports:
 
 GitHub tokens can be created in the GitHub web UI Settings page, under `Personal Access Tokens`.
 
-Note: `Travis Pro` has known [issues](https://github.com/travis-ci/travis.rb/issues/315) related to use of its API.
-Consequently, presently `build_eval` cannot reliably report the status of these builds.
-
 #### Reporting Results ####
 
 This example uses the [blinky gem](https://github.com/perryn/blinky) to show the net status of builds on a USB light.

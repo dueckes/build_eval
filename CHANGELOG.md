@@ -1,3 +1,8 @@
+** 0.0.14 **
+
+Fix:
+* `Travis` and `TravisPro` builds are updated - session caches are cleared prior to use
+
 ** 0.0.13 **
 
 New:

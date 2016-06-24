@@ -16,7 +16,7 @@ module BuildEval
         private
 
         def find_session(github_token)
-          sessions[github_token]
+          sessions[github_token].tap { |session| session.clear_cache if session }
         end
 
         def create_session(github_token)

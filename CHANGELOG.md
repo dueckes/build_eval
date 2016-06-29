@@ -1,3 +1,12 @@
+** 0.0.15 **
+
+New:
+* `Travis` and `TravisPro` builds can monitor a specific branch
+* `Travis` and `TravisPro` build statuses including `building`
+
+Misc:
+* Travis sessions obtained via pool
+
 ** 0.0.14 **
 
 Fix:

@@ -53,7 +53,7 @@ Currently supports:
   my_monitor = BuildEval.server(
     type:     :Travis,
     username: "my_username"
-  ).monitor("build_1", "build_2", "build_3")
+  ).monitor("build_1", "build_2:some_branch", "build_3") # Reports status of last build, regardless of branch, unless a branch is specified
 ```
 
 ### Travis CI Pro (travis-ci.com) Integration ###
@@ -65,7 +65,7 @@ Currently supports:
     type:         :TravisPro,
     username:     "my_username",
     github_token: "ABC123"
-  ).monitor("build_1", "build_2", "build_3")
+  ).monitor("build_1", "build_2:some_branch", "build_3") # Reports status of last build, regardless of branch, unless a branch is specified
 ```
 
 GitHub tokens can be created in the GitHub web UI Settings page, under `Personal Access Tokens`.

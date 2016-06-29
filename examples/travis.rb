@@ -5,15 +5,15 @@ module BuildEval
 
       class << self
 
-        def builds
-          %w{ build_eval http_stub http_stub_producer_example }
+        def build_configurations
+          %w{ build_eval build_eval:v0.0.1 http_stub_producer_example }
         end
 
         def monitor
           BuildEval.server(
             type:     :Travis,
             username: "MYOB-Technology"
-          ).monitor(*builds)
+          ).monitor(*build_configurations)
         end
 
         def display_statuses

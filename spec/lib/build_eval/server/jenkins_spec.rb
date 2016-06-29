@@ -13,13 +13,14 @@ describe BuildEval::Server::Jenkins do
   describe "#build_result" do
 
     let(:build_name)              { "some_build_name" }
+    let(:branch_name)             { nil }
     let(:response)                { instance_double(Net::HTTPResponse) }
     let(:build_result)            { instance_double(BuildEval::Result::BuildResult) }
     let(:cruise_control_response) do
       instance_double(BuildEval::Server::CruiseControlResponse, parse_result: build_result)
     end
 
-    subject { jenkins_server.build_result(build_name) }
+    subject { jenkins_server.build_result(build_name, branch_name) }
 
     before(:example) do
       allow(http).to receive(:get).and_return(response)

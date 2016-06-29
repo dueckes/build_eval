@@ -13,11 +13,12 @@ module BuildEval
 
       public
 
-      SUCCESS       = new(severity: 0, symbol: :success!, description: "succeeded")
-      UNKNOWN       = new(severity: 1, symbol: :warning!, description: "unknown")
-      INDETERMINATE = new(severity: 2, symbol: :warning!, description: "indeterminate")
-      FAILURE       = new(severity: 3, symbol: :failure!, description: "failed")
-      ERROR         = new(severity: 4, symbol: :failure!, description: "errored")
+      SUCCESS       = new(severity: 0, symbol: :success!,  description: "succeeded")
+      BUILDING      = new(severity: 1, symbol: :building!, description: "building")
+      UNKNOWN       = new(severity: 2, symbol: :warning!,  description: "unknown")
+      INDETERMINATE = new(severity: 3, symbol: :warning!,  description: "indeterminate")
+      FAILURE       = new(severity: 4, symbol: :failure!,  description: "failed")
+      ERROR         = new(severity: 5, symbol: :failure!,  description: "errored")
 
       class << self
 
@@ -36,7 +37,7 @@ module BuildEval
       attr_reader :severity
 
       def unsuccessful?
-        self != SUCCESS
+        ![ SUCCESS, BUILDING ].include?(self)
       end
 
       def to_sym

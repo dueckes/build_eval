@@ -1,4 +1,5 @@
 describe BuildEval::Monitor::Composite do
+
   let(:monitors) { (1..2).map { double(BuildEval::Monitor::Base) } }
 
   let(:composite) { described_class.new(*monitors) }

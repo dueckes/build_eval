@@ -58,6 +58,7 @@ describe BuildEval::Result::Status do
           BuildEval::Result::Status::FAILURE,
           BuildEval::Result::Status::UNKNOWN,
           BuildEval::Result::Status::INDETERMINATE,
+          BuildEval::Result::Status::BUILDING,
           BuildEval::Result::Status::SUCCESS
         ]
       end
@@ -73,6 +74,7 @@ describe BuildEval::Result::Status do
       let(:statuses) do
         [
           BuildEval::Result::Status::SUCCESS,
+          BuildEval::Result::Status::BUILDING,
           BuildEval::Result::Status::UNKNOWN,
           BuildEval::Result::Status::INDETERMINATE,
           BuildEval::Result::Status::FAILURE,
@@ -92,12 +94,21 @@ describe BuildEval::Result::Status do
 
     subject { status.unsuccessful? }
 
-    context "when the status is SUCCESS" do
-      let(:status) { BuildEval::Result::Status::SUCCESS }
+    {
+      "SUCCESS"  => BuildEval::Result::Status::SUCCESS,
+      "BUILDING" => BuildEval::Result::Status::BUILDING
+    }.each do |name, status|
 
-      it "returns false" do
-        expect(subject).to be(false)
+      context "when the status is #{name}" do
+
+        let(:status) { status }
+
+        it "returns false" do
+          expect(subject).to be(false)
+        end
+
       end
+
     end
 
     {
@@ -127,6 +138,7 @@ describe BuildEval::Result::Status do
 
     {
       SUCCESS:       :success!,
+      BUILDING:      :building!,
       UNKNOWN:       :warning!,
       INDETERMINATE: :warning!,
       FAILURE:       :failure!,
@@ -137,7 +149,7 @@ describe BuildEval::Result::Status do
 
         let(:status) { BuildEval::Result::Status.const_get(name) }
 
-        it "returns success!" do
+        it "returns #{expected_symbol}" do
           expect(subject).to eql(expected_symbol)
         end
 
@@ -153,6 +165,7 @@ describe BuildEval::Result::Status do
 
     {
       SUCCESS:       "succeeded",
+      BUILDING:      "building",
       UNKNOWN:       "unknown",
       INDETERMINATE: "indeterminate",
       FAILURE:       "failed",
@@ -163,7 +176,7 @@ describe BuildEval::Result::Status do
 
         let(:status) { BuildEval::Result::Status.const_get(name) }
 
-        it "returns success!" do
+        it "returns #{expected_string}" do
           expect(subject).to eql(expected_string)
         end
 

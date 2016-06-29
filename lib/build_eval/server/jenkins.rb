@@ -8,9 +8,9 @@ module BuildEval
         @base_uri = args[:uri]
       end
 
-      def build_result(name)
+      def build_result(build_name, _branch_name)
         raw_response = @http.get("#{@base_uri}/cc.xml")
-        BuildEval::Server::CruiseControlResponse.new(raw_response).parse_result("//Project[@name=\"#{name}\"]")
+        BuildEval::Server::CruiseControlResponse.new(raw_response).parse_result("//Project[@name=\"#{build_name}\"]")
       end
 
       def to_s

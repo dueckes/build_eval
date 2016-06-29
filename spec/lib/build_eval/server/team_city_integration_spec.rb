@@ -8,11 +8,12 @@ describe BuildEval::Server::TeamCity, "integrating with a response parser", inte
   describe "#build_result" do
 
     let(:build_name)       { "some_build_name" }
+    let(:branch_name)      { nil }
     let(:response_message) { nil }
     let(:response_body)    { nil }
     let(:response)         { instance_double(Net::HTTPResponse, message: response_message, body: response_body) }
 
-    subject { team_city_server.build_result(build_name) }
+    subject { team_city_server.build_result(build_name, branch_name) }
 
     before(:example) { allow(http).to receive(:get).and_return(response) }
 

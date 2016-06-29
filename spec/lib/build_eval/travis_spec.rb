@@ -3,23 +3,39 @@ describe BuildEval::Travis do
   describe "::last_build_status" do
 
     let(:repository_path) { "some/repository_path" }
+    let(:branch)          { nil }
     let(:optional_args)   { {} }
+    let(:args)            { { repository_path: repository_path, branch: branch }.merge(optional_args) }
 
-    let(:recent_builds)                   do
-      (1..3).map { |i| instance_double(::Travis::Client::Build, finished?: i > 1) }
-    end
-    let(:last_finished_build)             { recent_builds[1] }
-    let(:last_finished_build_passed_flag) { true }
-    let(:travis_repository)               do
-      instance_double(::Travis::Client::Repository, recent_builds: recent_builds)
-    end
-    let(:travis_session)                  { instance_double(::Travis::Client::Session, repo: travis_repository) }
+    let(:build_color)       { "red" }
+    let(:build)             { instance_double(::Travis::Client::Build, color: build_color) }
+    let(:travis_repository) { instance_double(::Travis::Client::Repository, last_build: build) }
+    let(:travis_session)    { instance_double(::Travis::Client::Session, repo: travis_repository) }
 
-    subject { described_class.last_build_status({ repository_path: repository_path }.merge(optional_args)) }
+    subject { described_class.last_build_status(args) }
 
-    before(:example) do
-      allow(BuildEval::Travis::SessionFactory).to receive(:create).and_return(travis_session)
-      allow(last_finished_build).to receive(:passed?).and_return(last_finished_build_passed_flag)
+    before(:example) { allow(BuildEval::Travis::Session).to receive(:open).and_yield(travis_session) }
+
+    shared_examples_for "a Travis build whose status is determined" do
+
+      {
+        "green"  => "Success",
+        "yellow" => "Building",
+        "red"    => "Failure"
+      }.each do |color, status|
+
+        context "when the builds color is #{color}" do
+
+          let(:build_color) { color }
+
+          it "returns '#{status}'" do
+            expect(subject).to eql(status)
+          end
+
+        end
+
+      end
+
     end
 
     context "when a Github authentication token is provided" do
@@ -27,8 +43,8 @@ describe BuildEval::Travis do
       let(:github_token)  { "SOMEGITHUBAUTHTOKEN" }
       let(:optional_args) { { github_token: github_token } }
 
-      it "creates a Travis session using the token" do
-        expect(BuildEval::Travis::SessionFactory).to receive(:create).with(github_token)
+      it "opens a Travis session using the token" do
+        expect(BuildEval::Travis::Session).to receive(:open).with(github_token)
 
         subject
       end
@@ -39,58 +55,19 @@ describe BuildEval::Travis do
 
       let(:optional_args) { {} }
 
-      it "creates a Travis session for a nil token" do
-        expect(BuildEval::Travis::SessionFactory).to receive(:create).with(nil)
+      it "opens a Travis session for a nil token" do
+        expect(BuildEval::Travis::Session).to receive(:open).with(nil)
 
         subject
       end
 
     end
 
-
-    it "retrieves the Travis repository for the provided repository path from the session" do
-      expect(travis_session).to receive(:repo).with(repository_path)
-
-      subject
-    end
-
-    it "retrieves the recent builds from the repository" do
-      expect(travis_repository).to receive(:recent_builds)
-
-      subject
-    end
-
-    it "determines if the last finished build has passed" do
-      expect(last_finished_build).to receive(:passed?)
-
-      subject
-    end
-
-    context "when the last finished build passed" do
-
-      let(:last_finished_build_passed_flag) { true }
-
-      it "returns 'Success'" do
-        expect(subject).to eql("Success")
-      end
-
-    end
-
-    context "when the last finished build failed" do
-
-      let(:last_finished_build_passed_flag) { false }
-
-      it "returns 'Failure'" do
-        expect(subject).to eql("Failure")
-      end
-
-    end
-
-    context "when an error occurs obtaining a session" do
+    context "when an error occurs opening a session" do
 
       before(:example) do
-        allow(BuildEval::Travis::SessionFactory).to(
-          receive(:create).and_raise(::Travis::Client::Error.new("Forced error"))
+        allow(BuildEval::Travis::Session).to(
+          receive(:open).and_raise(::Travis::Client::Error.new("Forced error"))
         )
       end
 
@@ -100,14 +77,62 @@ describe BuildEval::Travis do
 
     end
 
-    context "when an error occurs retrieving the recent builds" do
+    it "retrieves the Travis repository for the provided repository path from the session" do
+      expect(travis_session).to receive(:repo).with(repository_path)
 
-      before(:example) do
-        allow(travis_repository).to receive(:recent_builds).and_raise(::Travis::Client::Error.new("Forced error"))
+      subject
+    end
+
+    context "when a branch is provided" do
+
+      let(:branch) { "some_branch" }
+
+      before(:example) { allow(travis_repository).to receive(:branch).and_return(build) }
+
+      it_behaves_like "a Travis build whose status is determined"
+
+      it "retrieves the last build for the branch" do
+        expect(travis_repository).to receive(:branch).with(branch)
+
+        subject
       end
 
-      it "returns 'Unknown'" do
-        expect(subject).to eql("Unknown")
+      context "when an error occurs retrieving the last build" do
+
+        before(:example) do
+          allow(travis_repository).to receive(:branch).and_raise(::Travis::Client::Error.new("Forced error"))
+        end
+
+        it "returns 'Unknown'" do
+          expect(subject).to eql("Unknown")
+        end
+
+      end
+
+    end
+
+    context "when a branch is not provided" do
+
+      let(:branch) { nil }
+
+      it_behaves_like "a Travis build whose status is determined"
+
+      it "retrieves the last build repository" do
+        expect(travis_repository).to receive(:last_build)
+
+        subject
+      end
+
+      context "when an error occurs retrieving the last build" do
+
+        before(:example) do
+          allow(travis_repository).to receive(:last_build).and_raise(::Travis::Client::Error.new("Forced error"))
+        end
+
+        it "returns 'Unknown'" do
+          expect(subject).to eql("Unknown")
+        end
+
       end
 
     end

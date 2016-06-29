@@ -5,7 +5,7 @@ module BuildEval
 
       class << self
 
-        def builds
+        def build_configurations
           ENV["TRAVIS_PRO_BUILDS"].split(",")
         end
 
@@ -14,7 +14,7 @@ module BuildEval
             type:         :TravisPro,
             username:     "MYOB-Technology",
             github_token: ENV["TRAVIS_PRO_GITHUB_TOKEN"]
-          ).monitor(*builds)
+          ).monitor(*build_configurations)
         end
 
         def display_statuses

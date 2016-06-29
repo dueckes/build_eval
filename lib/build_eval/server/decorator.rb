@@ -7,14 +7,14 @@ module BuildEval
         @delegate = delegate
       end
 
-      def build_result(name)
-        @delegate.build_result(name)
+      def build_result(build_name, branch_name)
+        @delegate.build_result(build_name, branch_name)
       rescue StandardError
-        BuildEval::Result::BuildResult.indeterminate(name)
+        BuildEval::Result::BuildResult.indeterminate(build_name: build_name, branch_name: branch_name)
       end
 
-      def monitor(*build_names)
-        BuildEval::Monitor::Server.new(server: @delegate, build_names: build_names.flatten)
+      def monitor(*build_configurations)
+        BuildEval::Monitor::Server.new(server: @delegate, build_configurations: build_configurations.flatten)
       end
 
     end

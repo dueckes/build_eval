@@ -7,10 +7,11 @@ describe BuildEval::Server::Jenkins, "integrating with a response parser", integ
 
   describe "#build_result" do
 
-    let(:build_name) { "some_build_name" }
-    let(:response)   { instance_double(Net::HTTPResponse, body: response_body) }
+    let(:build_name)  { "some_build_name" }
+    let(:branch_name) { nil }
+    let(:response)    { instance_double(Net::HTTPResponse, body: response_body) }
 
-    subject { jenkins.build_result(build_name) }
+    subject { jenkins.build_result(build_name, branch_name) }
 
     before(:example) { allow(http).to receive(:get).and_return(response) }
 

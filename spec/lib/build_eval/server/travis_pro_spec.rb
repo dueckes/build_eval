@@ -9,19 +9,20 @@ describe BuildEval::Server::TravisPro do
   describe "#build_result" do
 
     let(:build_name)        { "some_build_name" }
+    let(:branch_name)       { "some_branch_name" }
     let(:last_build_status) { "Unknown" }
     let(:build_result)      { instance_double(BuildEval::Result::BuildResult) }
 
-    subject { travis_pro_server.build_result(build_name) }
+    subject { travis_pro_server.build_result(build_name, branch_name) }
 
     before(:example) do
       allow(BuildEval::Travis).to receive(:last_build_status).and_return(last_build_status)
       allow(BuildEval::Result::BuildResult).to receive(:create).and_return(build_result)
     end
 
-    it "retrieves the last build status from Travis using the provided GitHub token" do
+    it "retrieves the last build status for the provided branch from Travis using the provided GitHub token" do
       expect(BuildEval::Travis).to(
-        receive(:last_build_status).with(hash_including(github_token: github_token))
+        receive(:last_build_status).with(hash_including(github_token: github_token, branch: branch_name))
       )
 
       subject
@@ -43,10 +44,14 @@ describe BuildEval::Server::TravisPro do
       subject
     end
 
+    it "creates a build result whose branch name is the provided branch" do
+      expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(branch_name: branch_name))
+
+      subject
+    end
+
     it "creates a build result whose status is the status the last build status" do
-      expect(BuildEval::Result::BuildResult).to(
-        receive(:create).with(hash_including(status_name: last_build_status))
-      )
+      expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: last_build_status))
 
       subject
     end

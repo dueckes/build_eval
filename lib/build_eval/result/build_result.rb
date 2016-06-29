@@ -6,23 +6,31 @@ module BuildEval
       class << self
 
         def create(args)
-          new(build_name: args[:build_name], status: BuildEval::Result::Status.find(args[:status_name]))
+          new(
+            build_name:  args[:build_name],
+            branch_name: args[:branch_name],
+            status:      BuildEval::Result::Status.find(args[:status_name])
+          )
         end
 
-        def indeterminate(build_name)
-          new(build_name: build_name, status: BuildEval::Result::Status::INDETERMINATE)
+        def indeterminate(args)
+          new(
+            build_name:  args[:build_name],
+            branch_name: args[:branch_name],
+            status:      BuildEval::Result::Status::INDETERMINATE
+          )
         end
 
       end
 
-      attr_reader :build_name
       attr_reader :status
 
       private
 
       def initialize(args)
-        @build_name = args[:build_name]
-        @status     = args[:status]
+        @build_name  = args[:build_name]
+        @branch_name = args[:branch_name]
+        @status      = args[:status]
       end
 
       public
@@ -32,7 +40,7 @@ module BuildEval
       end
 
       def to_s
-        "#{@build_name}: #{@status}"
+        "#{@build_name}#{@branch_name ? ":#{@branch_name}" : ""} -> #{@status}"
       end
 
     end

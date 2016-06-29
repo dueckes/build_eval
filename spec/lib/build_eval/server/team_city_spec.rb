@@ -15,6 +15,7 @@ describe BuildEval::Server::TeamCity do
   describe "#build_result" do
 
     let(:build_name)    { "some_build_name" }
+    let(:branch_name)   { nil }
     let(:response_body) do
       <<-RESPONSE
         <builds count="3" href="/httpAuth/app/rest/buildTypes/#{build_name}/builds/" nextHref="/httpAuth/app/rest/buildTypes/#{build_name}/builds/?count=3&start=3">
@@ -24,7 +25,7 @@ describe BuildEval::Server::TeamCity do
     end
     let(:response) { instance_double(Net::HTTPResponse, body: response_body) }
 
-    subject { team_city_server.build_result(build_name) }
+    subject { team_city_server.build_result(build_name, branch_name) }
 
     before(:example) { allow(http).to receive(:get).and_return(response) }
 

@@ -1,6 +1,6 @@
 describe BuildEval, "integrating with a real CI server", smoke: true do
 
-  let(:builds)  { BuildEval::Examples::Travis.builds }
+  let(:build_configurations)  { BuildEval::Examples::Travis.build_configurations }
 
   let(:monitor) { BuildEval::Examples::Travis.monitor }
 
@@ -22,8 +22,8 @@ describe BuildEval, "integrating with a real CI server", smoke: true do
     end
 
     it "describes the builds and their individual status" do
-      builds.each do |build|
-        expect(subject.to_s).to match(/#{build}: (#{tolerated_statuses.map(&:to_s).join("|")})/)
+      build_configurations.each do |build_configuration|
+        expect(subject.to_s).to match(/#{build_configuration} -> (#{tolerated_statuses.map(&:to_s).join("|")})/)
       end
     end
 

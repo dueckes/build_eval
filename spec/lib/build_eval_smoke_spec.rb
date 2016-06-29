@@ -9,6 +9,7 @@ describe BuildEval, "integrating with a real CI server", smoke: true do
     let(:tolerated_statuses) do
       [
         BuildEval::Result::Status::SUCCESS,
+        BuildEval::Result::Status::BUILDING,
         BuildEval::Result::Status::UNKNOWN,
         BuildEval::Result::Status::FAILURE,
         BuildEval::Result::Status::ERROR

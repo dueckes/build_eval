@@ -1,8 +1,8 @@
 describe BuildEval, "integrating with a real CI server", smoke: true do
 
-  let(:build_configurations)  { BuildEval::Examples::Travis.build_configurations }
+  let(:build_configurations)  { BuildEval::Examples::TravisOrg.build_configurations }
 
-  let(:monitor) { BuildEval::Examples::Travis.monitor }
+  let(:monitor) { BuildEval::Examples::TravisOrg.monitor }
 
   describe "the evaluated results from a build monitor for the server" do
 

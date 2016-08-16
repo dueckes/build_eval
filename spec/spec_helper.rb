@@ -16,7 +16,7 @@ if ENV['coverage']
 end
 
 require_relative '../lib/build_eval'
-require_relative '../examples/travis'
+require_relative '../examples/travis_org'
 
 %w( shared_examples shared_context ).each do |file_type|
   Dir[::File.expand_path("../**/*_#{file_type}.rb", __FILE__)].each { |file| require file }

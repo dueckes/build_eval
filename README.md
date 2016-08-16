@@ -20,7 +20,7 @@ Currently supports:
 
 * [TeamCity](https://www.jetbrains.com/teamcity/) via basic authentication
 * [Jenkins](https://jenkins.io/) with no authentication
-* [Travis CI](https://travis-ci.org/) and [Travis Pro](https://travis-ci.com/) with GitHub token authentication
+* [Travis CI Org](https://travis-ci.org/) and [Travis CI Pro](https://travis-ci.com/) with GitHub token authentication
 
 ### TeamCity Integration ###
 
@@ -45,13 +45,13 @@ Currently supports:
   ).monitor("build_1", "build_2", "build_3")
 ```
 
-### Travis CI (travis-ci.org) Integration ###
+### Travis CI Org (travis-ci.org) Integration ###
 
 ```ruby
   require 'build_eval'
 
   my_monitor = BuildEval.server(
-    type:     :Travis,
+    type:     :TravisOrg,
     username: "my_username"
   ).monitor("build_1", "build_2:some_branch", "build_3") # Reports status of last build, regardless of branch, unless a branch is specified
 ```

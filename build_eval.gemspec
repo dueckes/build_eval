@@ -26,10 +26,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'travis',   '~> 1.8'
 
   spec.add_development_dependency 'rake',                      '~> 11.2'
-  spec.add_development_dependency 'travis-lint',               '~> 2.0'
-  spec.add_development_dependency 'rubocop',                   '~> 0.41'
-  spec.add_development_dependency 'rspec',                     '~> 3.4'
+  spec.add_development_dependency 'rubocop',                   '~> 0.42'
+  spec.add_development_dependency 'rspec',                     '~> 3.5'
   spec.add_development_dependency 'fakeweb',                   '~> 1.3'
-  spec.add_development_dependency 'simplecov',                 '~> 0.11'
+  spec.add_development_dependency 'simplecov',                 '~> 0.12'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.6'
+  spec.add_development_dependency 'travis-lint',               '~> 2.0'
 end

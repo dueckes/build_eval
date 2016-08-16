@@ -1,7 +1,7 @@
 module BuildEval
   module Examples
 
-    class Travis
+    class TravisOrg
 
       class << self
 
@@ -11,7 +11,7 @@ module BuildEval
 
         def monitor
           BuildEval.server(
-            type:     :Travis,
+            type:     :TravisOrg,
             username: "MYOB-Technology"
           ).monitor(*build_configurations)
         end

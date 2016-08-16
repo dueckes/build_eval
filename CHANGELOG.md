@@ -1,3 +1,9 @@
+** 0.0.16 **
+
+Breaking:
+* `Travis` server renamed to `TravisOrg`
+* Dropped Ruby 1.9.3 support (encouraged by `json` gem)
+
 ** 0.0.15 **
 
 New:

@@ -1,4 +1,4 @@
-describe BuildEval::Server::Travis do
+describe BuildEval::Server::TravisOrg do
 
   let(:username)         { "some_username" }
   let(:constructor_args) { { username: username } }
@@ -57,8 +57,8 @@ describe BuildEval::Server::Travis do
 
     subject { travis_server.to_s }
 
-    it "returns a string indicating it uses the Travis CI service" do
-      expect(subject).to include("Travis CI")
+    it "returns a string indicating it uses the Travis CI Org service" do
+      expect(subject).to include("Travis CI Org")
     end
 
     it "returns a string containing the username" do

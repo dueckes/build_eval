@@ -5,7 +5,7 @@ Bundler.require(:default, :development)
 require 'rubocop/rake_task'
 require 'rspec/core/rake_task'
 
-require_relative 'examples/travis'
+require_relative 'examples/travis_org'
 require_relative 'examples/travis_pro'
 
 desc "Source code metrics analysis"
@@ -65,8 +65,8 @@ namespace :example do
     end
   end
 
-  desc "Evaulates Travis Builds"
-  task(:travis) { monitor_indefinitely(BuildEval::Examples::Travis) }
+  desc "Evaulates Travis Org Builds"
+  task(:travis_org) { monitor_indefinitely(BuildEval::Examples::TravisOrg) }
 
   desc "Evaulates Travis Pro Builds"
   task(:travis_pro) { monitor_indefinitely(BuildEval::Examples::TravisPro) }
